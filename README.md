@@ -1,5 +1,6 @@
 <img width="1536" height="1024" alt="SyntenyPair-Explorer-Logo" src="https://github.com/user-attachments/assets/997f9bf9-8f58-41d4-903d-c20904203ec1" />
 
+**🔗 [Launch SyntenyPair Explorer](https://gibbonslabgenomics.github.io/SyntenyPair-Explorer/)** — runs directly in your browser, no installation needed.
 
 # SyntenyPair-Explorer
 A standalone, browser-based tool for interactive two-genome 
