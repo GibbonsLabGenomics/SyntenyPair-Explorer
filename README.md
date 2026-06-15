@@ -3,11 +3,11 @@
 
 # SyntenyPair-Explorer
 A standalone, browser-based tool for interactive two-genome 
-synteny visualization. No installation required — open the 
-HTML file in any modern browser.
+synteny visualization. No installation required -- open the 
+HTML file in any browser.
 
 ## Features
-- Accepts GFF3/GTF, BLAST outfmt6, and MCScan colinearity files
+- Accepts fasta genome, GFF3/GTF, BLAST outfmt6, and MCScan colinearity files
 - Interactive zoom, pan, and gene search
 - Automatic partner-genome alignment when searching genes
 - Synteny block coloring, custom gene highlights, PNG export
@@ -16,7 +16,8 @@ HTML file in any modern browser.
 ## Quick start
 1. Download `index.html`
 2. Open it in Chrome, Firefox, Safari, or Edge
-3. Load your genome (fasta format), GFF3 and synteny files, or click "Load demo"
+3. Load your genome (fasta format), GFF3 and synteny files (MCscan
+   colinearity file or blast outfmt6), or click "Load demo"
 
 ## Input formats
 **GFF3/GTF:** Standard gene annotation files. Gene, mRNA, and 
@@ -27,7 +28,7 @@ Phytozome-style GFFs work.
 Query/subject can be chromosome names (coordinates used to 
 find overlapping genes) or gene IDs (direct match).
 
-**MCScan colinearity:** Output from MCScan/JCVI 
+**MCScan colinearity:** Output from MCScan 
 (.collinearity files). Detected automatically.
 
 ## Citation
