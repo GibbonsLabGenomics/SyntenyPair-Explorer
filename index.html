@@ -5,7 +5,7 @@
   modified: 06/09/2026
   license: MIT License
   This work was supported by the National Science Foundation grant 1942681 to John G. Gibbons
-  Repository: https://github.com/GibbonsLabGenomics/SyntenyPair-Explorer/
+  Repository: https://github.com/[yourusername]/SyntenyPair-Explorer
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -46,7 +46,6 @@ button.danger:hover{background:#fff5f5}
 .uf input[type=file]::file-selector-button{font-size:10px;padding:2px 7px;border:1px solid #ccc;border-radius:5px;background:#fff;cursor:pointer;margin-right:5px}
 .fs{font-size:10px;height:14px;color:#aaa}
 .fs.ok{color:#1D9E75;font-weight:500}
-/* ── Home screen session load strip ── */
 .home-session{display:flex;align-items:center;gap:10px;border-top:1px solid #eee;padding-top:10px;margin-top:6px;flex-wrap:wrap}
 .home-session .sep-lbl{font-size:11px;color:#aaa;white-space:nowrap}
 .cw{border:1px solid #e0dfd8;border-radius:8px;overflow:hidden;background:#fff;margin-top:8px}
@@ -78,88 +77,71 @@ canvas.pan{cursor:grabbing}
 .hlrow .cblbl{font-size:11px;color:#666;display:flex;align-items:center;gap:3px;cursor:pointer;white-space:nowrap;user-select:none}
 .hlrow .hlsep{width:1px;height:18px;background:#e0dfd8;flex-shrink:0}
 .hlrow .tlbl{font-size:10px;color:#888;white-space:nowrap}
-/* ── Gene-context zoom panel ── */
 .ctxbox{background:#f0f7ff;border:1px solid #c8daf0;border-radius:8px;padding:8px 12px;margin-top:6px;display:none;flex-wrap:wrap;gap:7px;align-items:center}
 .ctxbox .olbl{color:#3366AA}
-/* ── Close / return button — top-right of viewer ── */
 .close-btn{float:right;margin-top:-2px;font-size:11px;height:24px;padding:0 10px;color:#888;border-color:#ddd}
 .close-btn:hover{background:#fff5f5;color:#c44;border-color:#f0c0c0}
 #tip{position:fixed;background:#fff;border:1px solid #d0cfd8;border-radius:8px;box-shadow:0 2px 12px rgba(0,0,0,0.1);padding:7px 10px;font-size:12px;color:#1a1a1a;pointer-events:none;display:none;z-index:9999;max-width:280px;line-height:1.65}
 #tip b{font-weight:600}
 @media(max-width:700px){.ugrid{grid-template-columns:1fr 1fr}}
+
+/* ── Assembly stats panel ── */
+.statsbox{background:#fafaf8;border:1px solid #e4e3dc;border-radius:8px;padding:10px 13px;margin-top:6px;display:none}
+.statsbox .olbl{margin-bottom:6px}
+.stats-genome{margin-bottom:12px}
+.stats-genome:last-child{margin-bottom:0}
+.stats-genome h3{font-size:12px;font-weight:600;color:#444;margin:0 0 4px;padding:4px 8px;background:#eee;border-radius:4px}
+.stats-summary{font-size:11px;color:#555;line-height:1.7;padding:4px 8px;margin-bottom:6px}
+.stats-summary b{color:#333}
+.stats-tbl{width:100%;border-collapse:collapse;font-size:11px}
+.stats-tbl th{text-align:left;padding:3px 8px;background:#f0efe8;border-bottom:1px solid #ddd;font-weight:600;color:#555;position:sticky;top:0}
+.stats-tbl td{padding:3px 8px;border-bottom:1px solid #eee;color:#444}
+.stats-tbl tr:hover td{background:#f8f7f2}
+.stats-tbl td.num{text-align:right;font-family:monospace;font-size:10.5px}
+.stats-scroll{max-height:300px;overflow-y:auto;border:1px solid #e8e7e0;border-radius:6px}
+.stats-actions{display:flex;gap:8px;margin-top:8px;align-items:center}
+
 </style>
 </head>
 <body>
 <h1>SyntenyPair Explorer</h1>
 <p class="sub">Two-genome comparative genomics — zoom, pan, block coloring, gene search, PNG export</p>
 
-<!-- ══════════════════════════════════════════════════════════════════
-     HOME / UPLOAD PANEL
-═══════════════════════════════════════════════════════════════════ -->
 <div class="card" id="upanel">
   <div class="ugrid">
-    <div class="uf">
-      <label>Genome 1 FASTA <span style="font-weight:400;color:#aaa">(optional)</span></label>
-      <input type="file" id="ffa1" accept=".fa,.fasta,.fna"><div class="fs" id="sfa1"></div>
-    </div>
-    <div class="uf">
-      <label>Genome 2 FASTA <span style="font-weight:400;color:#aaa">(optional)</span></label>
-      <input type="file" id="ffa2" accept=".fa,.fasta,.fna"><div class="fs" id="sfa2"></div>
-    </div>
-    <div class="uf">
-      <label>BLAST outfmt6 <span style="font-weight:400;color:#aaa">or</span> MCScan colinearity</label>
-      <input type="file" id="fsyn" accept=".txt,.tsv,.tab,.collinearity,.blast"><div class="fs" id="ssyn"></div>
-    </div>
-    <div class="uf">
-      <label>GFF3 — Genome 1</label>
-      <input type="file" id="fgff1" accept=".gff,.gff3,.gtf"><div class="fs" id="sgff1"></div>
-    </div>
-    <div class="uf">
-      <label>GFF3 — Genome 2</label>
-      <input type="file" id="fgff2" accept=".gff,.gff3,.gtf"><div class="fs" id="sgff2"></div>
-    </div>
+    <div class="uf"><label>Genome 1 FASTA <span style="font-weight:400;color:#aaa">(optional)</span></label><input type="file" id="ffa1" accept=".fa,.fasta,.fna"><div class="fs" id="sfa1"></div></div>
+    <div class="uf"><label>Genome 2 FASTA <span style="font-weight:400;color:#aaa">(optional)</span></label><input type="file" id="ffa2" accept=".fa,.fasta,.fna"><div class="fs" id="sfa2"></div></div>
+    <div class="uf"><label>BLAST outfmt6 <span style="font-weight:400;color:#aaa">or</span> MCScan colinearity</label><input type="file" id="fsyn" accept=".txt,.tsv,.tab,.collinearity,.blast"><div class="fs" id="ssyn"></div></div>
+    <div class="uf"><label>GFF3 — Genome 1</label><input type="file" id="fgff1" accept=".gff,.gff3,.gtf"><div class="fs" id="sgff1"></div></div>
+    <div class="uf"><label>GFF3 — Genome 2</label><input type="file" id="fgff2" accept=".gff,.gff3,.gtf"><div class="fs" id="sgff2"></div></div>
     <div class="uf" style="flex-direction:row;align-items:flex-end;justify-content:flex-end;gap:8px">
       <button onclick="loadDemo()">Load demo</button>
       <button class="primary" onclick="loadFiles()">Visualize &#8594;</button>
     </div>
   </div>
   <div style="font-size:11px;color:#999;line-height:1.6;border-top:1px solid #eee;padding-top:6px;margin-top:4px">
-    <b style="color:#666">BLAST tab:</b> query/subject = chromosome names (coords → overlapping genes) <b style="color:#666">or</b> gene IDs (direct match). &nbsp;
+    <b style="color:#666">BLAST tab:</b> query/subject = chromosome names (coords &rarr; overlapping genes) <b style="color:#666">or</b> gene IDs (direct match). &nbsp;
     <b style="color:#666">MCScan:</b> col2 = gene1 ID, col3 = gene2 ID. &nbsp;
     <b style="color:#666">GFF:</b> gene/mRNA/transcript; ID= attribute matched to synteny file.
   </div>
-
-  <!-- ── Session load from home screen ── -->
   <div class="home-session">
     <span class="sep-lbl">— or resume a saved session —</span>
     <label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer">
-      <span style="font-size:12px;border:1px solid #c8c7c0;border-radius:6px;padding:3px 10px;background:#fff;height:28px;display:flex;align-items:center;gap:5px">
-        &#128193; Load Session (.json)
-      </span>
-      <input type="file" id="fSessionHome" accept=".json" style="display:none"
-             onchange="if(this.files[0]){loadSession(this.files[0]);this.value=''}">
+      <span style="font-size:12px;border:1px solid #c8c7c0;border-radius:6px;padding:3px 10px;background:#fff;height:28px;display:flex;align-items:center;gap:5px">&#128193; Load Session (.json)</span>
+      <input type="file" id="fSessionHome" accept=".json" style="display:none" onchange="if(this.files[0]){loadSession(this.files[0]);this.value=''}">
     </label>
     <span id="homeSessionStatus" style="font-size:11px;color:#888"></span>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════════════════════════
-     VIEWER PANEL
-═══════════════════════════════════════════════════════════════════ -->
 <div class="card" id="vpanel" style="display:none">
-
-  <!-- Close / return to home -->
-  <button class="close-btn" onclick="returnHome()" title="Return to home screen and load new files">&#8592; Close viewer</button>
-
-  <!-- Row 1: sequences + nav -->
+  <button class="close-btn" onclick="returnHome()" title="Return to home screen">&#8592; Close viewer</button>
   <div class="row">
     <div class="lbl">G1 seq:</div><select id="sel1" onchange="seqChange()"></select>
     <div class="lbl">G2 seq:</div><select id="sel2" onchange="seqChange()"></select>
     <div class="sep"></div>
-    <div class="lbl">G1 region:</div>
-    <input type="text" id="r1" style="width:120px" placeholder="start-end">
-    <div class="lbl">G2 region:</div>
-    <input type="text" id="r2" style="width:120px" placeholder="start-end">
+    <div class="lbl">G1 region:</div><input type="text" id="r1" style="width:120px" placeholder="start-end">
+    <div class="lbl">G2 region:</div><input type="text" id="r2" style="width:120px" placeholder="start-end">
     <button onclick="goRgn()">Go</button>
     <div class="sep"></div>
     <button onclick="zm(2)">+ zoom</button>
@@ -167,44 +149,32 @@ canvas.pan{cursor:grabbing}
     <button onclick="resetV()">Reset</button>
     <div class="sep"></div>
     <div class="lbl">Zoom to:</div>
-    <input type="number" id="zoomSizeVal" value="20" min="1" style="width:62px"
-           onkeydown="if(event.key==='Enter')zoomToSize()">
+    <input type="number" id="zoomSizeVal" value="20" min="1" style="width:62px" onkeydown="if(event.key==='Enter')zoomToSize()">
     <select id="zoomSizeUnit" style="width:52px;height:28px;font-size:11px">
-      <option value="bp">bp</option>
-      <option value="kb" selected>kb</option>
-      <option value="Mb">Mb</option>
+      <option value="bp">bp</option><option value="kb" selected>kb</option><option value="Mb">Mb</option>
     </select>
     <button onclick="zoomToSize()">Go</button>
     <div class="sep"></div>
     <button onclick="exportPNG()">&#8600; PNG</button>
     <button onclick="saveSession()">&#128190; Save Session</button>
-    <input type="file" id="fSession" accept=".json" style="display:none"
-           onchange="if(this.files[0]){loadSession(this.files[0]);this.value=''}">
+    <input type="file" id="fSession" accept=".json" style="display:none" onchange="if(this.files[0]){loadSession(this.files[0]);this.value=''}">
     <button onclick="document.getElementById('fSession').click()">&#128193; Load Session</button>
     <div class="sep"></div>
     <button onclick="toggleDiag()">Diagnostics</button>
     <button onclick="toggleOpts()">&#9881; Options</button>
     <button onclick="toggleHl()">&#127919; Highlights</button>
+    <button onclick="toggleStats()">&#128202; Assembly Stats</button>
   </div>
-
-  <!-- Row 2: find gene + gene-context zoom -->
   <div class="row">
     <div class="lbl">Find gene:</div>
-    <input type="text" id="gsearch" style="width:150px" placeholder="gene ID or partial"
-           onkeydown="if(event.key==='Enter')findGene()"
-           oninput="if(!this.value.trim())clearFound()">
+    <input type="text" id="gsearch" style="width:150px" placeholder="gene ID or partial" onkeydown="if(event.key==='Enter')findGene()" oninput="if(!this.value.trim())clearFound()">
     <button onclick="findGene()">Find</button>
     <button onclick="clearFound()" id="btnClearFound" title="Clear highlight" style="padding:0 8px;color:#bbb;font-size:14px;display:none">&#10005;</button>
     <div class="sep"></div>
-    <!-- Flank mode selector -->
     <div class="lbl">Flank:</div>
     <input type="number" id="findFlankVal" value="10" min="1" style="width:58px">
-    <select id="findFlankUnit" style="width:62px;height:28px;font-size:11px"
-            onchange="onFlankUnitChange()">
-      <option value="bp">bp</option>
-      <option value="kb" selected>kb</option>
-      <option value="Mb">Mb</option>
-      <option value="genes">genes</option>
+    <select id="findFlankUnit" style="width:62px;height:28px;font-size:11px" onchange="onFlankUnitChange()">
+      <option value="bp">bp</option><option value="kb" selected>kb</option><option value="Mb">Mb</option><option value="genes">genes</option>
     </select>
     <span id="flankHint" style="font-size:10px;color:#aaa">(both tracks equal)</span>
     <div class="sep"></div>
@@ -213,141 +183,97 @@ canvas.pan{cursor:grabbing}
     <button onclick="allBlk(true)">all</button>
     <button onclick="allBlk(false)">none</button>
   </div>
-
-  <!-- Row 3: gene-context zoom panel (shown when unit=genes) -->
   <div class="ctxbox" id="ctxbox">
     <span class="olbl">&#128269; Gene-context zoom</span>
-    <span style="font-size:11px;color:#5577AA">
-      Shows <b id="ctxN">10</b> flanking genes on each side in <b>both</b> genomes.
-      The partner genome window is centred on the syntenic counterpart of the found gene,
-      and extends ±<b id="ctxN2">10</b> genes around it.
-    </span>
+    <span style="font-size:11px;color:#5577AA">Shows <b id="ctxN">10</b> flanking genes on each side in <b>both</b> genomes. Partner genome window centred on the syntenic counterpart, extending &#177;<b id="ctxN2">10</b> genes.</span>
   </div>
-
-  <!-- Row 4: orient -->
   <div class="row">
     <span class="lbl">Orient:</span>
-    <button id="btnFlip1" onclick="toggleFlip(1)">⇄ Flip G1</button>
-    <button id="btnFlip2" onclick="toggleFlip(2)">⇄ Flip G2</button>
+    <button id="btnFlip1" onclick="toggleFlip(1)">&#8644; Flip G1</button>
+    <button id="btnFlip2" onclick="toggleFlip(2)">&#8644; Flip G2</button>
     <div class="sep"></div>
     <button onclick="alignSnap(2,1)">&#9875; Align G2&#8594;G1</button>
     <button onclick="alignSnap(1,2)">&#9875; Align G1&#8594;G2</button>
     <div class="sep"></div>
     <span class="lbl">Anchor:</span>
     <select id="selAnchor" onchange="S.opts.anchor=this.value;render()">
-      <option value="none">None</option>
-      <option value="g2tog1">G2 follows G1</option>
-      <option value="g1tog2">G1 follows G2</option>
+      <option value="none">None</option><option value="g2tog1">G2 follows G1</option><option value="g1tog2">G1 follows G2</option>
     </select>
     <button onclick="resetOrient()" style="font-size:11px;height:24px;padding:0 9px">&#8635; Reset orient</button>
   </div>
 
-  <!-- Options panel -->
   <div class="optsbox" id="optsbox">
     <span class="olbl">Genes:</span>
-    <div class="ogrp">
-      <input type="checkbox" id="chkNames" checked onchange="S.opts.showNames=this.checked;render()">
-      <label for="chkNames" class="lbl">Show names</label>
-    </div>
-    <div class="ogrp"><span class="lbl">+ strand</span>
-      <input type="color" id="cpPos" value="#378ADD" oninput="S.opts.colPos=this.value;updateLegend();render()">
-    </div>
-    <div class="ogrp"><span class="lbl">&#8722; strand</span>
-      <input type="color" id="cpNeg" value="#D85A30" oninput="S.opts.colNeg=this.value;updateLegend();render()">
-    </div>
+    <div class="ogrp"><input type="checkbox" id="chkNames" checked onchange="S.opts.showNames=this.checked;render()"><label for="chkNames" class="lbl">Show names</label></div>
+    <div class="ogrp"><span class="lbl">+ strand</span><input type="color" id="cpPos" value="#378ADD" oninput="S.opts.colPos=this.value;updateLegend();render()"></div>
+    <div class="ogrp"><span class="lbl">&#8722; strand</span><input type="color" id="cpNeg" value="#D85A30" oninput="S.opts.colNeg=this.value;updateLegend();render()"></div>
     <div class="osep"></div>
     <span class="olbl">Links:</span>
-    <div class="ogrp">
-      <input type="checkbox" id="chkColorByBlock" checked
-             onchange="S.opts.colorByBlock=this.checked;updateLegend();render()">
-      <label for="chkColorByBlock" class="lbl">Color by block</label>
-    </div>
-    <div class="ogrp"><span class="lbl">&#8805;80%</span>
-      <input type="color" id="cpHigh" value="#50A06E" oninput="S.opts.colHigh=this.value;updateLegend();render()">
-    </div>
-    <div class="ogrp"><span class="lbl">60&#8211;80%</span>
-      <input type="color" id="cpMid" value="#B99637" oninput="S.opts.colMid=this.value;updateLegend();render()">
-    </div>
-    <div class="ogrp"><span class="lbl">&lt;60%</span>
-      <input type="color" id="cpLow" value="#C34B4B" oninput="S.opts.colLow=this.value;updateLegend();render()">
-    </div>
-    <div class="ogrp">
-      <span class="lbl">Opacity</span>
-      <input type="range" id="slLinkAlpha" min="10" max="100" value="100" style="width:72px"
-             oninput="S.opts.linkAlpha=+this.value/100;document.getElementById('vLinkAlpha').textContent=this.value+'%';render()">
-      <span id="vLinkAlpha" class="rval">100%</span>
-    </div>
+    <div class="ogrp"><input type="checkbox" id="chkColorByBlock" checked onchange="S.opts.colorByBlock=this.checked;updateLegend();render()"><label for="chkColorByBlock" class="lbl">Color by block</label></div>
+    <div class="ogrp"><span class="lbl">&#8805;80%</span><input type="color" id="cpHigh" value="#50A06E" oninput="S.opts.colHigh=this.value;updateLegend();render()"></div>
+    <div class="ogrp"><span class="lbl">60&#8211;80%</span><input type="color" id="cpMid" value="#B99637" oninput="S.opts.colMid=this.value;updateLegend();render()"></div>
+    <div class="ogrp"><span class="lbl">&lt;60%</span><input type="color" id="cpLow" value="#C34B4B" oninput="S.opts.colLow=this.value;updateLegend();render()"></div>
+    <div class="ogrp"><span class="lbl">Opacity</span><input type="range" id="slLinkAlpha" min="10" max="100" value="100" style="width:72px" oninput="S.opts.linkAlpha=+this.value/100;document.getElementById('vLinkAlpha').textContent=this.value+'%';render()"><span id="vLinkAlpha" class="rval">100%</span></div>
     <div class="osep"></div>
     <span class="olbl">Track&nbsp;BG:</span>
-    <div class="ogrp"><span class="lbl">G1</span>
-      <input type="color" id="cpBg1" value="#eeede7" oninput="S.opts.trackBg1=this.value;render()">
-    </div>
-    <div class="ogrp"><span class="lbl">G2</span>
-      <input type="color" id="cpBg2" value="#eeede7" oninput="S.opts.trackBg2=this.value;render()">
-    </div>
+    <div class="ogrp"><span class="lbl">G1</span><input type="color" id="cpBg1" value="#eeede7" oninput="S.opts.trackBg1=this.value;render()"></div>
+    <div class="ogrp"><span class="lbl">G2</span><input type="color" id="cpBg2" value="#eeede7" oninput="S.opts.trackBg2=this.value;render()"></div>
     <div class="ogrp">
       <span class="lbl">Spacing</span>
-      <input type="range" id="slGap" min="50" max="300" value="213" style="width:72px"
-             oninput="syncGap('slider',this.value)">
-      <input type="number" id="inGap" min="50" max="300" value="213" style="width:52px"
-             onchange="syncGap('input',this.value)"
-             onkeydown="if(event.key==='Enter')syncGap('input',this.value)">
+      <input type="range" id="slGap" min="50" max="300" value="213" style="width:72px" oninput="syncGap('slider',this.value)">
+      <input type="number" id="inGap" min="50" max="300" value="213" style="width:52px" onchange="syncGap('input',this.value)" onkeydown="if(event.key==='Enter')syncGap('input',this.value)">
     </div>
     <div class="osep"></div>
     <span class="olbl">Scale&nbsp;bar:</span>
-    <div class="ogrp"><span class="lbl">G1</span>
-      <select id="ssSide1" onchange="S.opts.scaleSide1=this.value;render()">
-        <option value="above" selected>above</option><option value="below">below</option>
-      </select>
-    </div>
-    <div class="ogrp"><span class="lbl">G2</span>
-      <select id="ssSide2" onchange="S.opts.scaleSide2=this.value;render()">
-        <option value="below" selected>below</option><option value="above">above</option>
-      </select>
-    </div>
+    <div class="ogrp"><span class="lbl">G1</span><select id="ssSide1" onchange="S.opts.scaleSide1=this.value;render()"><option value="above" selected>above</option><option value="below">below</option></select></div>
+    <div class="ogrp"><span class="lbl">G2</span><select id="ssSide2" onchange="S.opts.scaleSide2=this.value;render()"><option value="below" selected>below</option><option value="above">above</option></select></div>
     <div class="osep"></div>
     <span class="olbl">Preset:</span>
     <div class="ogrp">
-      <input type="text" id="presetName" placeholder="preset name"
-             style="width:100px;height:24px;font-size:11px;padding:2px 7px">
+      <input type="text" id="presetName" placeholder="preset name" style="width:100px;height:24px;font-size:11px;padding:2px 7px">
       <button onclick="savePreset()" style="height:24px;padding:0 9px;font-size:11px">&#128190; Save</button>
     </div>
     <div class="ogrp">
-      <select id="presetSel" style="height:24px;font-size:11px;width:140px">
-        <option value="">— saved presets —</option>
-      </select>
+      <select id="presetSel" style="height:24px;font-size:11px;width:140px"><option value="">— saved presets —</option></select>
       <button onclick="loadPreset()" style="height:24px;padding:0 9px;font-size:11px">Load</button>
-      <button onclick="deletePreset()" style="height:24px;padding:0 9px;font-size:11px;color:#c55" title="Delete selected preset">✕</button>
+      <button onclick="deletePreset()" style="height:24px;padding:0 9px;font-size:11px;color:#c55" title="Delete selected preset">&#10005;</button>
     </div>
     <div class="osep"></div>
     <button onclick="resetOpts()" style="height:24px;padding:0 9px;font-size:11px">&#8635; Reset</button>
   </div>
 
-  <!-- Highlights panel -->
   <div class="hlbox" id="hlbox">
     <div class="hlhdr">
       <span class="olbl">&#127919; Gene Highlights</span>
       <button onclick="addHlEntry()" style="height:24px;padding:0 10px;font-size:11px">+ Add</button>
       <button onclick="clearAllHl()" style="height:24px;padding:0 9px;font-size:11px;color:#999">Clear all</button>
-      <span style="font-size:10px;color:#aaa;flex:1;min-width:160px">IDs · arrow · body · label · lbl src · ptr color · txt color · angle · ☑ callout · ☑ inside lbl</span>
+      <span style="font-size:10px;color:#aaa;flex:1;min-width:160px">IDs &middot; arrow &middot; body &middot; label &middot; lbl src &middot; ptr color &middot; txt color &middot; angle &middot; &#9745; callout &middot; &#9745; inside lbl</span>
     </div>
     <div id="hllist"></div>
-    <div id="hlhint" style="font-size:10px;color:#bbb;padding:3px 1px">
-      No entries yet — click <b style="color:#888">+ Add</b> to create one.
-    </div>
+    <div id="hlhint" style="font-size:10px;color:#bbb;padding:3px 1px">No entries yet &mdash; click <b style="color:#888">+ Add</b> to create one.</div>
   </div>
 
+  <!-- Assembly stats panel -->
+  <div class="statsbox" id="statsbox">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+      <span class="olbl">&#128202; Assembly &amp; Annotation Summary</span>
+      <span style="font-size:10px;color:#aaa">(requires optional genome FASTA input)</span>
+    </div>
+    <div id="statsContent">
+      <div style="font-size:11px;color:#aaa;padding:10px">No data loaded yet.</div>
+    </div>
+    <div class="stats-actions">
+      <button onclick="exportStatsTSV()" style="height:24px;padding:0 10px;font-size:11px">&#8595; Export TSV</button>
+    </div>
+  </div>
   <div class="diag" id="diag"></div>
   <div class="cw" style="position:relative">
     <canvas id="svc" height="440"></canvas>
     <div id="labelEditWrap" style="display:none;position:absolute;z-index:100;pointer-events:all">
       <input id="labelEditInput" type="text"
-             style="font-size:12px;padding:2px 6px;border:1.5px solid #7F77DD;border-radius:5px;
-                    background:#fff;color:#1a1a1a;outline:none;box-shadow:0 2px 8px rgba(0,0,0,0.18);
-                    min-width:140px;max-width:320px"
-             onkeydown="onLabelEditKey(event)"
-             onblur="commitLabelEdit()">
-      <div style="font-size:10px;color:#888;margin-top:2px;text-align:center">Enter to save · Esc to cancel · Delete to reset</div>
+             style="font-size:12px;padding:2px 6px;border:1.5px solid #7F77DD;border-radius:5px;background:#fff;color:#1a1a1a;outline:none;box-shadow:0 2px 8px rgba(0,0,0,0.18);min-width:140px;max-width:320px"
+             onkeydown="onLabelEditKey(event)" onblur="commitLabelEdit()">
+      <div style="font-size:10px;color:#888;margin-top:2px;text-align:center">Enter to save &middot; Esc to cancel &middot; Delete to reset</div>
     </div>
   </div>
   <div class="leg">
@@ -355,8 +281,8 @@ canvas.pan{cursor:grabbing}
     <div class="li"><div class="ls" id="leg-neg" style="background:#D85A30"></div>&#8722; strand</div>
     <div class="li"><div class="ls" style="background:#1D9E75"></div>find/hover</div>
     <div class="li"><div class="ls" id="leg-high" style="background:rgba(80,160,110,0.48)"></div>link &#8805;80% id</div>
-    <div class="li"><div class="ls" id="leg-mid"  style="background:rgba(185,150,55,0.44)"></div>link 60&#8211;80%</div>
-    <div class="li"><div class="ls" id="leg-low"  style="background:rgba(195,75,75,0.38)"></div>link &lt;60%</div>
+    <div class="li"><div class="ls" id="leg-mid" style="background:rgba(185,150,55,0.44)"></div>link 60&#8211;80%</div>
+    <div class="li"><div class="ls" id="leg-low" style="background:rgba(195,75,75,0.38)"></div>link &lt;60%</div>
     <div class="li"><div class="ls" style="background:#7F77DD"></div>block-colored</div>
   </div>
   <div class="sbar" id="sbar"></div>
@@ -364,6 +290,8 @@ canvas.pan{cursor:grabbing}
 <div id="tip"></div>
 
 <script>
+// ═══════════════════════════════════════════════════════════════════════════════
+// SyntenyPair Explorer v1.0.0
 // ═══════════════════════════════════════════════════════════════════════════════
 const BPAL=[
   ['rgba(127,119,221,0.42)','#7F77DD'],['rgba(29,158,117,0.42)','#1D9E75'],
@@ -374,7 +302,6 @@ const BPAL=[
 ];
 const HL_DEFAULTS=['#E05A2A','#9B59B6','#27AE60','#E67E22','#2574A9','#C0392B','#16A085','#D4537E'];
 let hlUid=0,hlColorIdx=0;
-
 const S={
   g1:{genes:[],name:'',s:0,e:0,view:{s:0,e:1},seqs:[],flip:false},
   g2:{genes:[],name:'',s:0,e:0,view:{s:0,e:1},seqs:[],flip:false},
@@ -385,7 +312,8 @@ const S={
   hov:null,found:null,
   _files:{},mode:'',log:[],
   hlEntries:[],hlMap:{},
-  labelOverrides:{}, // geneId -> custom label string (editable by clicking callout)
+  labelOverrides:{},
+  fastaStats:{g1:null,g2:null},assemblyStats:{g1:null,g2:null},
   opts:{
     showNames:true,colPos:'#378ADD',colNeg:'#D85A30',
     colHigh:'#50A06E',colMid:'#B99637',colLow:'#C34B4B',
@@ -396,12 +324,11 @@ const S={
 };
 const MGR=46;
 let dynMGL=70;
-let lastCalloutHits=[]; // [{geneId, x, y, w, h}] for click-to-edit
-let neededHeadroom=0;    // computed during drawCallouts, checked after render
-const CALLOUT_TOP_PAD=80; // px above G1 track for 0° labels; dynamic resize handles rotated ones
+let lastCalloutHits=[];
+let neededHeadroom=0;
+const CALLOUT_TOP_PAD=80;
 const T1=72+CALLOUT_TOP_PAD,TH=27,GH=21,CT=T1+TH+4;
 
-// ─── File inputs ──────────────────────────────────────────────────────────────
 ['ffa1','ffa2','fgff1','fgff2','fsyn'].forEach(id=>{
   document.getElementById(id).onchange=function(){
     const k=id.replace('f','');S._files[k]=this.files[0];
@@ -411,22 +338,19 @@ const T1=72+CALLOUT_TOP_PAD,TH=27,GH=21,CT=T1+TH+4;
 });
 const rf=f=>new Promise(r=>{const fr=new FileReader();fr.onload=e=>r(e.target.result);fr.readAsText(f);});
 
-// ─── Return to home ───────────────────────────────────────────────────────────
 function returnHome(){
   if(!confirm('Return to home screen? The current session will not be saved automatically.'))return;
-  // Reset state
   S.g1={genes:[],name:'',s:0,e:0,view:{s:0,e:1},seqs:[],flip:false};
   S.g2={genes:[],name:'',s:0,e:0,view:{s:0,e:1},seqs:[],flip:false};
   S.links=[];S.rawLinks=[];S.blocks=[];S.bActive={};S.bColors={};
   S.g1m={};S.g2m={};S.g1idx={};S.g2idx={};
   S.hov=null;S.found=null;S._files={};S.mode='';S.log=[];
   S.hlEntries=[];S.hlMap={};S.labelOverrides={};hlUid=0;hlColorIdx=0;
-  // Close all sub-panels
-  ['optsbox','hlbox','diag'].forEach(id=>{document.getElementById(id).style.display='none';});
+  S.fastaStats={g1:null,g2:null};S.assemblyStats={g1:null,g2:null};
+  ['optsbox','hlbox','diag','statsbox'].forEach(id=>{document.getElementById(id).style.display='none';});
   document.getElementById('ctxbox').style.display='none';
   document.getElementById('tip').style.display='none';
   document.getElementById('homeSessionStatus').textContent='';
-  // Clear file input statuses
   ['sfa1','sfa2','sgff1','sgff2','ssyn'].forEach(id=>{
     const el=document.getElementById(id);if(el){el.textContent='';el.className='fs';}
   });
@@ -435,37 +359,19 @@ function returnHome(){
   if(cv)cx.clearRect(0,0,cv.width,cv.height);
 }
 
-// ─── Flank unit change ────────────────────────────────────────────────────────
 function onFlankUnitChange(){
   const unit=document.getElementById('findFlankUnit').value;
   const isGenes=unit==='genes';
-  document.getElementById('flankHint').textContent=isGenes
-    ?'genes each side (auto-syncs partner genome)'
-    :'(both tracks equal)';
+  document.getElementById('flankHint').textContent=isGenes?'genes each side (auto-syncs partner genome)':'(both tracks equal)';
   document.getElementById('ctxbox').style.display=isGenes?'flex':'none';
-  if(isGenes){
-    const n=document.getElementById('findFlankVal').value;
-    document.getElementById('ctxN').textContent=n;
-    document.getElementById('ctxN2').textContent=n;
-  }
+  if(isGenes){const n=document.getElementById('findFlankVal').value;document.getElementById('ctxN').textContent=n;document.getElementById('ctxN2').textContent=n;}
 }
-// Keep ctxbox counter live
 document.getElementById('findFlankVal').addEventListener('input',function(){
-  if(document.getElementById('findFlankUnit').value==='genes'){
-    document.getElementById('ctxN').textContent=this.value;
-    document.getElementById('ctxN2').textContent=this.value;
-  }
+  if(document.getElementById('findFlankUnit').value==='genes'){document.getElementById('ctxN').textContent=this.value;document.getElementById('ctxN2').textContent=this.value;}
 });
 
-// ─── Color helpers ────────────────────────────────────────────────────────────
-function hexToRgba(hex,a){
-  const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
-  return`rgba(${r},${g},${b},${a})`;
-}
-function contrastColor(hex){
-  const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
-  return(0.299*r+0.587*g+0.114*b)/255>0.55?'#333':'#f0f0f0';
-}
+function hexToRgba(hex,a){const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return`rgba(${r},${g},${b},${a})`;}
+function contrastColor(hex){const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return(0.299*r+0.587*g+0.114*b)/255>0.55?'#333':'#f0f0f0';}
 function updateLegend(){
   document.getElementById('leg-pos').style.background=S.opts.colPos;
   document.getElementById('leg-neg').style.background=S.opts.colNeg;
@@ -476,22 +382,16 @@ function updateLegend(){
 function computeMGL(){
   if(!cx)return 70;
   cx.save();cx.font='bold 11px -apple-system,sans-serif';
-  const n1=(S.g1.flip?'⇄ ':'')+S.g1.name;
-  const n2=(S.g2.flip?'⇄ ':'')+S.g2.name;
+  const n1=(S.g1.flip?'⇄ ':'')+S.g1.name,n2=(S.g2.flip?'⇄ ':'')+S.g2.name;
   const needed=Math.ceil(Math.max(cx.measureText(n1).width,cx.measureText(n2).width))+16;
-  cx.restore();
-  return Math.max(46,Math.min(needed,200));
+  cx.restore();return Math.max(46,Math.min(needed,200));
 }
-function gx(bp,v,w,flip){
-  const frac=(bp-v.s)/(v.e-v.s||1);
-  return flip?(w-MGR-frac*(w-dynMGL-MGR)):(dynMGL+frac*(w-dynMGL-MGR));
-}
+function gx(bp,v,w,flip){const frac=(bp-v.s)/(v.e-v.s||1);return flip?(w-MGR-frac*(w-dynMGL-MGR)):(dynMGL+frac*(w-dynMGL-MGR));}
 function geneLabel(g){return(g.name&&g.name!==g.id)?g.name:g.id;}
 
-// ─── Orientation ─────────────────────────────────────────────────────────────
 function toggleFlip(n){
   if(n===1){S.g1.flip=!S.g1.flip;document.getElementById('btnFlip1').classList.toggle('toggled',S.g1.flip);}
-  else      {S.g2.flip=!S.g2.flip;document.getElementById('btnFlip2').classList.toggle('toggled',S.g2.flip);}
+  else{S.g2.flip=!S.g2.flip;document.getElementById('btnFlip2').classList.toggle('toggled',S.g2.flip);}
   render();
 }
 function resetOrient(){
@@ -509,7 +409,7 @@ function alignSnap(dst,src){
   const dstCenter=dstMids.reduce((a,b)=>a+b,0)/dstMids.length;
   const span=srcView.e-srcView.s;
   if(dst===2)S.g2.view={s:dstCenter-span/2,e:dstCenter+span/2};
-  else        S.g1.view={s:dstCenter-span/2,e:dstCenter+span/2};
+  else S.g1.view={s:dstCenter-span/2,e:dstCenter+span/2};
   render();
 }
 function followG2(){
@@ -517,48 +417,35 @@ function followG2(){
   const vl=S.links.filter(lk=>lk.g1.seq===S.g1.name&&lk.g2.seq===S.g2.name&&lk.g1.end>=v1.s&&lk.g1.start<=v1.e);
   if(!vl.length)return;
   const center=vl.reduce((s,lk)=>s+(lk.g2.start+lk.g2.end)/2,0)/vl.length;
-  const span=S.g2.view.e-S.g2.view.s;
-  S.g2.view={s:center-span/2,e:center+span/2};
+  const span=S.g2.view.e-S.g2.view.s;S.g2.view={s:center-span/2,e:center+span/2};
 }
 function followG1(){
   const v2=S.g2.view;
   const vl=S.links.filter(lk=>lk.g1.seq===S.g1.name&&lk.g2.seq===S.g2.name&&lk.g2.end>=v2.s&&lk.g2.start<=v2.e);
   if(!vl.length)return;
   const center=vl.reduce((s,lk)=>s+(lk.g1.start+lk.g1.end)/2,0)/vl.length;
-  const span=S.g1.view.e-S.g1.view.s;
-  S.g1.view={s:center-span/2,e:center+span/2};
+  const span=S.g1.view.e-S.g1.view.s;S.g1.view={s:center-span/2,e:center+span/2};
 }
-
-// ─── Gap sync ────────────────────────────────────────────────────────────────
 function syncGap(src,val){
   let v=parseInt(val)||213;v=Math.max(50,Math.min(300,v));
   S.opts.trackGap=v;
   if(src!=='slider')document.getElementById('slGap').value=v;
-  if(src!=='input') document.getElementById('inGap').value=v;
+  if(src!=='input')document.getElementById('inGap').value=v;
   rsz();
 }
-
-// ─── Sync opts UI ─────────────────────────────────────────────────────────────
 function syncOptsUI(){
   document.getElementById('chkNames').checked=S.opts.showNames;
-  document.getElementById('cpPos').value=S.opts.colPos;
-  document.getElementById('cpNeg').value=S.opts.colNeg;
-  document.getElementById('cpHigh').value=S.opts.colHigh;
-  document.getElementById('cpMid').value=S.opts.colMid;
-  document.getElementById('cpLow').value=S.opts.colLow;
-  document.getElementById('cpBg1').value=S.opts.trackBg1;
-  document.getElementById('cpBg2').value=S.opts.trackBg2;
-  document.getElementById('ssSide1').value=S.opts.scaleSide1;
+  document.getElementById('cpPos').value=S.opts.colPos;document.getElementById('cpNeg').value=S.opts.colNeg;
+  document.getElementById('cpHigh').value=S.opts.colHigh;document.getElementById('cpMid').value=S.opts.colMid;
+  document.getElementById('cpLow').value=S.opts.colLow;document.getElementById('cpBg1').value=S.opts.trackBg1;
+  document.getElementById('cpBg2').value=S.opts.trackBg2;document.getElementById('ssSide1').value=S.opts.scaleSide1;
   document.getElementById('ssSide2').value=S.opts.scaleSide2;
   document.getElementById('slLinkAlpha').value=Math.round(S.opts.linkAlpha*100);
   document.getElementById('vLinkAlpha').textContent=Math.round(S.opts.linkAlpha*100)+'%';
-  document.getElementById('slGap').value=S.opts.trackGap;
-  document.getElementById('inGap').value=S.opts.trackGap;
+  document.getElementById('slGap').value=S.opts.trackGap;document.getElementById('inGap').value=S.opts.trackGap;
   document.getElementById('chkColorByBlock').checked=S.opts.colorByBlock;
   const sa=document.getElementById('selAnchor');if(sa)sa.value=S.opts.anchor||'none';
 }
-
-// ─── Options panel ────────────────────────────────────────────────────────────
 function toggleOpts(){const d=document.getElementById('optsbox');d.style.display=d.style.display==='flex'?'none':'flex';}
 function resetOpts(){
   S.opts={showNames:true,colPos:'#378ADD',colNeg:'#D85A30',colHigh:'#50A06E',colMid:'#B99637',
@@ -567,18 +454,17 @@ function resetOpts(){
   syncOptsUI();updateLegend();rsz();
 }
 
-// ─── Preset save / load ───────────────────────────────────────────────────────
+// ── Presets (stored in localStorage) ─────────────────────────────────────────
 const PRESET_KEY='syntenyViewerPresets';
 function updatePresetList(){
   const sel=document.getElementById('presetSel');if(!sel)return;
   const presets=JSON.parse(localStorage.getItem(PRESET_KEY)||'{}');
   const names=Object.keys(presets).sort();
-  sel.innerHTML='<option value="">— saved presets —</option>'+
-    names.map(n=>`<option value="${n.replace(/"/g,'&quot;')}">${n}</option>`).join('');
+  sel.innerHTML='<option value="">— saved presets —</option>'+names.map(n=>`<option value="${n.replace(/"/g,'&quot;')}">${n}</option>`).join('');
 }
 function savePreset(){
-  const nameEl=document.getElementById('presetName');
-  const name=(nameEl.value||'').trim();if(!name){alert('Enter a name for the preset.');return;}
+  const nameEl=document.getElementById('presetName');const name=(nameEl.value||'').trim();
+  if(!name){alert('Enter a name for the preset.');return;}
   const presets=JSON.parse(localStorage.getItem(PRESET_KEY)||'{}');
   presets[name]={...S.opts};localStorage.setItem(PRESET_KEY,JSON.stringify(presets));
   updatePresetList();document.getElementById('presetSel').value=name;
@@ -599,12 +485,11 @@ function deletePreset(){
   updatePresetList();document.getElementById('sbar').textContent=`Preset "${name}" deleted.`;
 }
 
-// ─── Session save / restore ───────────────────────────────────────────────────
+// ── Session save / restore ────────────────────────────────────────────────────
 function saveSession(){
   if(!S.g1.genes.length&&!S.g2.genes.length){alert('No data loaded to save.');return;}
   const snap={
-    version:3,timestamp:new Date().toISOString(),
-    opts:{...S.opts},
+    version:3,timestamp:new Date().toISOString(),opts:{...S.opts},
     g1:{genes:S.g1.genes,name:S.g1.name,s:S.g1.s,e:S.g1.e,view:{...S.g1.view},flip:S.g1.flip,seqs:S.g1.seqs},
     g2:{genes:S.g2.genes,name:S.g2.name,s:S.g2.s,e:S.g2.e,view:{...S.g2.view},flip:S.g2.flip,seqs:S.g2.seqs},
     links:S.links.map(lk=>({
@@ -638,9 +523,9 @@ function loadSession(file){
 }
 function restoreSession(snap){
   if(!snap||!snap.version||!snap.g1||!snap.g2){alert('Invalid or incompatible session file.');return;}
-  S.opts=Object.assign({showNames:true,colPos:'#378ADD',colNeg:'#D85A30',colHigh:'#50A06E',
-    colMid:'#B99637',colLow:'#C34B4B',trackBg1:'#eeede7',trackBg2:'#eeede7',
-    scaleSide1:'above',scaleSide2:'below',linkAlpha:1,trackGap:213,anchor:'none',colorByBlock:true},snap.opts||{});
+  S.opts=Object.assign({showNames:true,colPos:'#378ADD',colNeg:'#D85A30',colHigh:'#50A06E',colMid:'#B99637',
+    colLow:'#C34B4B',trackBg1:'#eeede7',trackBg2:'#eeede7',scaleSide1:'above',scaleSide2:'below',
+    linkAlpha:1,trackGap:213,anchor:'none',colorByBlock:true},snap.opts||{});
   S.g1.genes=snap.g1.genes||[];S.g1.name=snap.g1.name||'';S.g1.s=snap.g1.s||0;S.g1.e=snap.g1.e||1;
   S.g1.view={...(snap.g1.view||{s:S.g1.s,e:S.g1.e})};S.g1.flip=!!snap.g1.flip;S.g1.seqs=snap.g1.seqs||seqsFrom(S.g1.genes);
   S.g2.genes=snap.g2.genes||[];S.g2.name=snap.g2.name||'';S.g2.s=snap.g2.s||0;S.g2.e=snap.g2.e||1;
@@ -648,7 +533,6 @@ function restoreSession(snap){
   S.g1m=gmap(S.g1.genes);S.g2m=gmap(S.g2.genes);
   S.g1idx=buildIdx(S.g1.genes);S.g2idx=buildIdx(S.g2.genes);
   S.links=(snap.links||[]).map(lk=>{
-    // Prefer live gene map objects (have correct coords); fall back to serialized stub
     const g1=S.g1m[lk.g1.id]||S.g1m[lk.g1.idv||'']||S.g1m[lk.g1.name||'']||lk.g1;
     const g2=S.g2m[lk.g2.id]||S.g2m[lk.g2.idv||'']||S.g2m[lk.g2.name||'']||lk.g2;
     return{g1,g2,pct:lk.pct,score:lk.score,blk:lk.blk};
@@ -672,17 +556,13 @@ function restoreSession(snap){
   initCv();rsz();
 }
 
-// ─── Highlight panel ──────────────────────────────────────────────────────────
+// ── Highlight panel ───────────────────────────────────────────────────────────
 function toggleHl(){const d=document.getElementById('hlbox');d.style.display=d.style.display==='block'?'none':'block';}
 function addHlEntry(){
   const _arrowCol=HL_DEFAULTS[hlColorIdx++%HL_DEFAULTS.length];
   S.hlEntries.push({uid:hlUid++,query:'',color:_arrowCol,
     bodyColor:'#FFD966',showBodyFill:false,label:'',showCallout:true,showInsideLabel:true,
-    labelSrc:'annotation',
-    pointerColor:null,   // null = inherit arrow color
-    labelColor:null,     // null = inherit arrow color
-    labelAngle:0         // degrees: 0=horizontal, 45=diagonal, 90=vertical (upward)
-  });
+    labelSrc:'annotation',pointerColor:null,labelColor:null,labelAngle:0});
   renderHlList();
 }
 function removeHlEntry(uid){S.hlEntries=S.hlEntries.filter(e=>e.uid!==uid);rebuildHlMap();renderHlList();render();}
@@ -695,8 +575,7 @@ function renderHlList(){
     const qIn=document.createElement('input');qIn.type='text';qIn.value=e.query;qIn.placeholder='gene IDs, comma-separated';
     qIn.style.cssText='flex:1;min-width:110px;max-width:190px';qIn.oninput=()=>{e.query=qIn.value;rebuildHlMap();render();};
     const aLbl=document.createElement('span');aLbl.className='tlbl';aLbl.textContent='arrow:';
-    const cIn=document.createElement('input');cIn.type='color';cIn.value=e.color;cIn.title='Arrow & callout color';
-    cIn.oninput=()=>{e.color=cIn.value;rebuildHlMap();render();};
+    const cIn=document.createElement('input');cIn.type='color';cIn.value=e.color;cIn.title='Arrow color';
     const bLbl=document.createElement('span');bLbl.className='tlbl';bLbl.textContent='body:';
     const bcIn=document.createElement('input');bcIn.type='color';bcIn.value=e.bodyColor;
     bcIn.oninput=()=>{e.bodyColor=bcIn.value;rebuildHlMap();render();};
@@ -715,91 +594,58 @@ function renderHlList(){
     const ilCb=document.createElement('input');ilCb.type='checkbox';ilCb.checked=e.showInsideLabel;
     ilCb.onchange=()=>{e.showInsideLabel=ilCb.checked;rebuildHlMap();render();};
     ilWrap.appendChild(ilCb);ilWrap.appendChild(document.createTextNode('\u00a0inside lbl'));
-    // Label source dropdown
+    // Label source
     const srcLbl=document.createElement('span');srcLbl.className='tlbl';srcLbl.textContent='lbl src:';
     const srcSel=document.createElement('select');
     srcSel.style.cssText='height:24px;font-size:11px;padding:1px 4px;border:1px solid #d0cfc8;border-radius:6px;background:#fafaf8;color:#1a1a1a;cursor:pointer';
-    srcSel.title='What text to show in the callout / inside label';
     [['annotation','annotation (Name/product)'],['id','gene ID'],['custom','custom label field']].forEach(([v,t])=>{
       const o=document.createElement('option');o.value=v;o.textContent=t;srcSel.appendChild(o);
     });
-    srcSel.value=e.labelSrc||'annotation';
-    srcSel.onchange=()=>{e.labelSrc=srcSel.value;rebuildHlMap();render();};
-    // Pointer color (line + triangle) — independent of arrow color
+    srcSel.value=e.labelSrc||'annotation';srcSel.onchange=()=>{e.labelSrc=srcSel.value;rebuildHlMap();render();};
+    // Pointer color
     const pLbl=document.createElement('span');pLbl.className='tlbl';pLbl.textContent='ptr:';
-    const pcIn=document.createElement('input');pcIn.type='color';
-    pcIn.value=e.pointerColor||e.color;pcIn.title='Callout pointer & line color (default: same as arrow)';
+    const pcIn=document.createElement('input');pcIn.type='color';pcIn.value=e.pointerColor||e.color;pcIn.title='Pointer & line color';
     pcIn.oninput=()=>{e.pointerColor=pcIn.value;render();};
-    // Checkbox to re-sync pointer color to arrow color
-    const pcSync=document.createElement('label');pcSync.className='cblbl';pcSync.title='Sync pointer color to arrow color';
+    const pcSync=document.createElement('label');pcSync.className='cblbl';
     const pcSyncCb=document.createElement('input');pcSyncCb.type='checkbox';pcSyncCb.checked=!e.pointerColor;
-    pcSyncCb.onchange=()=>{
-      if(pcSyncCb.checked){e.pointerColor=null;pcIn.value=e.color;pcIn.disabled=true;}
-      else{e.pointerColor=pcIn.value;pcIn.disabled=false;}
-      render();
-    };
-    pcIn.disabled=!e.pointerColor;
-    pcSync.appendChild(pcSyncCb);pcSync.appendChild(document.createTextNode(' auto'));
-    // Label text color — independent of arrow color
+    pcSyncCb.onchange=()=>{if(pcSyncCb.checked){e.pointerColor=null;pcIn.value=e.color;pcIn.disabled=true;}else{e.pointerColor=pcIn.value;pcIn.disabled=false;}render();};
+    pcIn.disabled=!e.pointerColor;pcSync.appendChild(pcSyncCb);pcSync.appendChild(document.createTextNode(' auto'));
+    // Label text color
     const lcLbl=document.createElement('span');lcLbl.className='tlbl';lcLbl.textContent='txt:';
-    const lcIn=document.createElement('input');lcIn.type='color';
-    lcIn.value=e.labelColor||e.color;lcIn.title='Callout label text color (default: same as arrow)';
+    const lcIn=document.createElement('input');lcIn.type='color';lcIn.value=e.labelColor||e.color;lcIn.title='Label text color';
     lcIn.oninput=()=>{e.labelColor=lcIn.value;render();};
-    const lcSync=document.createElement('label');lcSync.className='cblbl';lcSync.title='Sync label text color to arrow color';
+    const lcSync=document.createElement('label');lcSync.className='cblbl';
     const lcSyncCb=document.createElement('input');lcSyncCb.type='checkbox';lcSyncCb.checked=!e.labelColor;
-    lcSyncCb.onchange=()=>{
-      if(lcSyncCb.checked){e.labelColor=null;lcIn.value=e.color;lcIn.disabled=true;}
-      else{e.labelColor=lcIn.value;lcIn.disabled=false;}
-      render();
-    };
-    lcIn.disabled=!e.labelColor;
-    lcSync.appendChild(lcSyncCb);lcSync.appendChild(document.createTextNode(' auto'));
-    // Also update disabled state when arrow color changes
-    const _origCinHandler=cIn.oninput;
-    cIn.oninput=()=>{
-      e.color=cIn.value;
-      if(!e.pointerColor){pcIn.value=e.color;}
-      if(!e.labelColor){lcIn.value=e.color;}
-      rebuildHlMap();render();
-    };
-    // Label angle control
+    lcSyncCb.onchange=()=>{if(lcSyncCb.checked){e.labelColor=null;lcIn.value=e.color;lcIn.disabled=true;}else{e.labelColor=lcIn.value;lcIn.disabled=false;}render();};
+    lcIn.disabled=!e.labelColor;lcSync.appendChild(lcSyncCb);lcSync.appendChild(document.createTextNode(' auto'));
+    // Arrow color — update ptr/txt when changed
+    cIn.oninput=()=>{e.color=cIn.value;if(!e.pointerColor)pcIn.value=e.color;if(!e.labelColor)lcIn.value=e.color;rebuildHlMap();render();};
+    // Angle control
     const angLbl=document.createElement('span');angLbl.className='tlbl';angLbl.textContent='angle:';
-    // Quick preset buttons
     const angWrap=document.createElement('span');angWrap.style.cssText='display:inline-flex;align-items:center;gap:3px';
-    const angNum=document.createElement('input');
-    angNum.type='number';angNum.min=0;angNum.max=90;angNum.value=e.labelAngle||0;
+    const angNum=document.createElement('input');angNum.type='number';angNum.min=0;angNum.max=90;angNum.value=e.labelAngle||0;
     angNum.style.cssText='width:46px;height:24px;font-size:11px;padding:2px 5px;border:1px solid #d0cfc8;border-radius:6px;background:#fafaf8;color:#1a1a1a;-moz-appearance:textfield;appearance:textfield';
-    angNum.title='Label rotation in degrees (0=horizontal, 45=diagonal, 90=vertical)';
     angNum.oninput=()=>{e.labelAngle=Math.max(0,Math.min(90,+angNum.value||0));rsz();};
     const angDeg=document.createElement('span');angDeg.className='tlbl';angDeg.textContent='°';
-    // Quick preset buttons: 0, 45, 90
     [0,45,90].forEach(deg=>{
-      const btn=document.createElement('button');
-      btn.textContent=deg+'°';
+      const btn=document.createElement('button');btn.textContent=deg+'°';
       btn.style.cssText='height:22px;padding:0 5px;font-size:10px;border:1px solid #d0cfc8;border-radius:5px;background:#fafaf8;cursor:pointer';
-      btn.onclick=()=>{e.labelAngle=deg;angNum.value=deg;rsz();};
-      angWrap.appendChild(btn);
+      btn.onclick=()=>{e.labelAngle=deg;angNum.value=deg;rsz();};angWrap.appendChild(btn);
     });
-    angWrap.insertBefore(angNum,angWrap.firstChild);
-    angWrap.insertBefore(angDeg,angWrap.children[1]);
+    angWrap.insertBefore(angNum,angWrap.firstChild);angWrap.insertBefore(angDeg,angWrap.children[1]);
     const rm=document.createElement('button');rm.className='rm';rm.textContent='✕';rm.title='Remove';rm.onclick=()=>removeHlEntry(e.uid);
     row.append(qIn,aLbl,cIn,bLbl,bcIn,bfWrap,sep,lIn,srcLbl,srcSel,coWrap,ilWrap,pLbl,pcIn,pcSync,lcLbl,lcIn,lcSync,angLbl,angWrap,rm);
     cont.appendChild(row);
   });
 }
-// Resolve the text to display for a given gene + highlight entry
-// labelSrc: 'annotation' → g.name (GFF Name= / product annotation)
-//           'id'         → g.id (raw GFF ID= attribute)
-//           'custom'     → hl.label field (falls back to id if blank)
-function resolveHlLabel(hl, g, fallbackId){
-  // Per-gene override always wins (set by clicking a callout label)
+
+function resolveHlLabel(hl,g,fallbackId){
   const gid=g?g.id:fallbackId;
-  if(gid&&S.labelOverrides[gid]!==undefined) return S.labelOverrides[gid]||gid;
+  if(gid&&S.labelOverrides[gid]!==undefined)return S.labelOverrides[gid]||gid;
   const src=hl.labelSrc||'annotation';
-  if(src==='annotation') return (g&&g.name&&g.name.trim()&&g.name!==g.id)?g.name:(g?g.id:fallbackId);
-  if(src==='id')         return g?g.id:fallbackId;
-  // 'custom'
-  return (hl.label&&hl.label.trim())?hl.label:(g?g.id:fallbackId);
+  if(src==='annotation')return(g&&g.name&&g.name.trim()&&g.name!==g.id)?g.name:(g?g.id:fallbackId);
+  if(src==='id')return g?g.id:fallbackId;
+  return(hl.label&&hl.label.trim())?hl.label:(g?g.id:fallbackId);
 }
 function rebuildHlMap(){
   S.hlMap={};
@@ -807,54 +653,39 @@ function rebuildHlMap(){
     if(!e.query.trim())return;
     e.query.split(/[\s,;]+/).forEach(raw=>{
       const id=raw.trim();if(!id)return;
-      const stripped=id.replace(/\.\d+$/,'');
-      const noPfxColon=id.replace(/^[^:]+:/,'');
-      const noPfxHyphen=id.replace(/^[a-zA-Z]+-/,'');
-      const noPfxColonStripped=noPfxColon.replace(/\.\d+$/,'');
-      const noPfxHyphenStripped=noPfxHyphen.replace(/\.\d+$/,'');
-      [id,id.toLowerCase(),stripped,stripped.toLowerCase(),
-       noPfxColon,noPfxColon.toLowerCase(),noPfxColonStripped,noPfxColonStripped.toLowerCase(),
-       noPfxHyphen,noPfxHyphen.toLowerCase(),noPfxHyphenStripped,noPfxHyphenStripped.toLowerCase()
-      ].forEach(k=>{if(k)S.hlMap[k]=e;});
+      const stripped=id.replace(/\.\d+$/,''),noPfxColon=id.replace(/^[^:]+:/,''),noPfxHyphen=id.replace(/^[a-zA-Z]+-/,'');
+      const noPfxColonStripped=noPfxColon.replace(/\.\d+$/,''),noPfxHyphenStripped=noPfxHyphen.replace(/\.\d+$/,'');
+      [id,id.toLowerCase(),stripped,stripped.toLowerCase(),noPfxColon,noPfxColon.toLowerCase(),
+       noPfxColonStripped,noPfxColonStripped.toLowerCase(),noPfxHyphen,noPfxHyphen.toLowerCase(),
+       noPfxHyphenStripped,noPfxHyphenStripped.toLowerCase()].forEach(k=>{if(k)S.hlMap[k]=e;});
     });
   });
 }
 function getHl(g){
   if(!g||!Object.keys(S.hlMap).length)return null;
   const id=g.id||'',idv=g.idv||id,name=g.name||'';
-  const stripped=id.replace(/\.\d+$/,'');
-  const noPfxColon=id.replace(/^[^:]+:/,'');
-  const noPfxHyphen=id.replace(/^[a-zA-Z]+-/,'');
-  for(const k of[id,idv,id.toLowerCase(),idv.toLowerCase(),name,name.toLowerCase(),
-    stripped,stripped.toLowerCase(),noPfxColon,noPfxColon.toLowerCase(),
-    noPfxHyphen,noPfxHyphen.toLowerCase()])
+  const stripped=id.replace(/\.\d+$/,''),noPfxColon=id.replace(/^[^:]+:/,''),noPfxHyphen=id.replace(/^[a-zA-Z]+-/,'');
+  for(const k of[id,idv,id.toLowerCase(),idv.toLowerCase(),name,name.toLowerCase(),stripped,stripped.toLowerCase(),noPfxColon,noPfxColon.toLowerCase(),noPfxHyphen,noPfxHyphen.toLowerCase()])
     if(k&&S.hlMap[k])return S.hlMap[k];
   return null;
 }
 
-// ─── GFF parser ───────────────────────────────────────────────────────────────
+// ── GFF3 / GTF parser ─────────────────────────────────────────────────────────
 function parseGff(txt){
-  const pri={gene:0,mrna:1,transcript:1,cds:2};
-  const all=[];
+  const pri={gene:0,mrna:1,transcript:1,cds:2};const all=[];
   txt.split('\n').forEach(line=>{
     line=line.trim();if(!line||line[0]==='#')return;
     const p=line.split('\t');if(p.length<9)return;
     const tp=p[2].toLowerCase();if(!(tp in pri))return;
-    const attr=p[8];
-    let id='',parent='',name='';
+    const attr=p[8];let id='',parent='',name='';
     if(attr.includes('=')){
-      const at={};
-      attr.split(';').forEach(a=>{const i=a.indexOf('=');if(i>0)at[a.slice(0,i).trim()]=a.slice(i+1).trim();});
+      const at={};attr.split(';').forEach(a=>{const i=a.indexOf('=');if(i>0)at[a.slice(0,i).trim()]=a.slice(i+1).trim();});
       id=at.ID||at.Name||at.gene_id||at.transcript_id||'';
-      name=at.Name||at.gene_name||'';
-      parent=at.Parent||'';
+      name=at.Name||at.gene_name||'';parent=at.Parent||'';
       if(parent.includes(','))parent=parent.split(',')[0].trim();
     }else{
-      const gm=attr.match(/gene_id\s+"([^"]+)"/);
-      const tm=attr.match(/transcript_id\s+"([^"]+)"/);
-      const nm=attr.match(/gene_name\s+"([^"]+)"/);
-      id=(tp==='gene')?(gm?gm[1]:''):(tm?tm[1]:(gm?gm[1]:''));
-      name=nm?nm[1]:'';parent='';
+      const gm=attr.match(/gene_id\s+"([^"]+)"/),tm=attr.match(/transcript_id\s+"([^"]+)"/),nm=attr.match(/gene_name\s+"([^"]+)"/);
+      id=(tp==='gene')?(gm?gm[1]:''):(tm?tm[1]:(gm?gm[1]:''));name=nm?nm[1]:'';parent='';
     }
     if(!id)return;
     const idv=id.replace(/\.\d+$/,'');
@@ -863,17 +694,10 @@ function parseGff(txt){
   if(!all.length)return[];
   const roots=all.filter(f=>!f.parent);
   const rootGenes=roots.filter(f=>f.tp==='gene');
-  if(rootGenes.length>0){
-    const seen=new Set();
-    return rootGenes.filter(g=>{const k=g.seq+'|'+g.start+'|'+g.end+'|'+g.strand;if(seen.has(k))return false;seen.add(k);return true;});
-  }
+  if(rootGenes.length>0){const seen=new Set();return rootGenes.filter(g=>{const k=g.seq+'|'+g.start+'|'+g.end+'|'+g.strand;if(seen.has(k))return false;seen.add(k);return true;});}
   const rootTx=roots.filter(f=>f.tp==='mrna'||f.tp==='transcript');
-  if(rootTx.length>0){
-    const seen=new Set();
-    return rootTx.filter(g=>{const k=g.seq+'|'+g.start+'|'+g.end+'|'+g.strand;if(seen.has(k))return false;seen.add(k);return true;});
-  }
-  const byPos={};
-  all.forEach(f=>{const k=f.seq+'|'+f.start+'|'+f.end+'|'+f.strand;if(!byPos[k]||pri[f.tp]<pri[byPos[k].tp])byPos[k]=f;});
+  if(rootTx.length>0){const seen=new Set();return rootTx.filter(g=>{const k=g.seq+'|'+g.start+'|'+g.end+'|'+g.strand;if(seen.has(k))return false;seen.add(k);return true;});}
+  const byPos={};all.forEach(f=>{const k=f.seq+'|'+f.start+'|'+f.end+'|'+f.strand;if(!byPos[k]||pri[f.tp]<pri[byPos[k].tp])byPos[k]=f;});
   return Object.values(byPos);
 }
 function parseBlast(txt){
@@ -897,10 +721,7 @@ function parseMcscan(txt){
   });
   return rows;
 }
-function buildIdx(genes){
-  const idx={};genes.forEach(g=>{(idx[g.seq]=idx[g.seq]||[]).push(g);});
-  Object.values(idx).forEach(a=>a.sort((a,b)=>a.start-b.start));return idx;
-}
+function buildIdx(genes){const idx={};genes.forEach(g=>{(idx[g.seq]=idx[g.seq]||[]).push(g);});Object.values(idx).forEach(a=>a.sort((a,b)=>a.start-b.start));return idx;}
 function geneAtCoord(idx,seq,s,e){
   const arr=idx[seq];if(!arr||!arr.length)return null;
   let best=null,bestOv=-Infinity,lo=0,hi=arr.length-1,si=arr.length-1;
@@ -910,14 +731,12 @@ function geneAtCoord(idx,seq,s,e){
     const ov=Math.min(g.end,e)-Math.max(g.start,s);if(ov>bestOv){bestOv=ov;best=g;}
   }
   if(!best){const mid=(s+e)/2;let nd=Infinity;
-    for(let i=Math.max(0,si-3);i<Math.min(arr.length,si+8);i++){
-      const d=Math.abs((arr[i].start+arr[i].end)/2-mid);if(d<nd){nd=d;best=arr[i];}}}
+    for(let i=Math.max(0,si-3);i<Math.min(arr.length,si+8);i++){const d=Math.abs((arr[i].start+arr[i].end)/2-mid);if(d<nd){nd=d;best=arr[i];}}}
   return best;
 }
 function blastBlocks(rows){
   const sorted=[...rows].sort((a,b)=>(a.qn+a.sn)<(b.qn+b.sn)?-1:(a.qn+a.sn)>(b.qn+b.sn)?1:a.qs-b.qs);
-  let bi=0,prev=null;
-  sorted.forEach(r=>{if(!prev||r.qn!==prev.qn||r.sn!==prev.sn||r.qs-prev.qe>100000)bi++;r.blk='blk'+bi;prev=r;});
+  let bi=0,prev=null;sorted.forEach(r=>{if(!prev||r.qn!==prev.qn||r.sn!==prev.sn||r.qs-prev.qe>100000)bi++;r.blk='blk'+bi;prev=r;});
 }
 function resolveLinks(rows,g1m,g2m,g1idx,g2idx,mode,log){
   const out=[];let nId=0,nCoord=0,nFail=0;
@@ -940,7 +759,7 @@ function resolveLinks(rows,g1m,g2m,g1idx,g2idx,mode,log){
   log.push(`Parsed: <b>${rows.length}</b> raw rows`);
   log.push(`Resolved by gene ID: <b>${nId}</b> | by coordinates: <b>${nCoord}</b> | unresolved: <b>${nFail}</b>`);
   if(nFail===rows.length&&rows.length>0){
-    log.push('<span style="color:#A32D2D">&#9888; ZERO links resolved.</span>');
+    log.push('<span style="color:#A32D2D">&#9888; ZERO links resolved &mdash; check that gene IDs in synteny file match GFF ID= attributes, or that BLAST seq names match GFF column 1.</span>');
     log.push('Synteny qnames (first 5): <b>'+[...new Set(rows.slice(0,5).map(r=>r.qn))].join(' | ')+'</b>');
     log.push('Synteny snames (first 5): <b>'+[...new Set(rows.slice(0,5).map(r=>r.sn))].join(' | ')+'</b>');
     log.push('GFF1 IDs (first 5): <b>'+Object.keys(g1m).slice(0,5).join(' | ')+'</b>');
@@ -953,9 +772,7 @@ function resolveLinks(rows,g1m,g2m,g1idx,g2idx,mode,log){
 function gmap(genes){
   const m={};
   genes.forEach(g=>{
-    m[g.id]=g;
-    if(g.idv&&g.idv!==g.id)m[g.idv]=g;
-    if(g.name&&g.name!==g.id&&g.name!==g.idv)m[g.name]=g;
+    m[g.id]=g;if(g.idv&&g.idv!==g.id)m[g.idv]=g;if(g.name&&g.name!==g.id&&g.name!==g.idv)m[g.name]=g;
     const noPfxColon=g.id.replace(/^[^:]+:/,'');
     if(noPfxColon&&noPfxColon!==g.id){m[noPfxColon]=g;const s=noPfxColon.replace(/\.\d+$/,'');if(s&&s!==noPfxColon)m[s]=g;}
     const noPfxHyphen=g.id.replace(/^[a-zA-Z]+-/,'');
@@ -964,48 +781,35 @@ function gmap(genes){
   return m;
 }
 function seqsFrom(genes){return[...new Set(genes.map(g=>g.seq))];}
-function ext(genes,seq){
-  const gg=genes.filter(g=>g.seq===seq);
-  if(!gg.length)return{s:0,e:1};
-  return{s:Math.min(...gg.map(g=>g.start)),e:Math.max(...gg.map(g=>g.end))};
-}
-function blkColors(links){
-  const blks=[...new Set(links.map(l=>l.blk))];
-  const c={};blks.forEach((b,i)=>c[b]=BPAL[i%BPAL.length]);return{blks,c};
-}
-
-// ─── Get gene's ranked position in its seq (sorted by start) ─────────────────
-// Used by gene-count flank mode
-function geneRank(gene,genes){
-  const seqGenes=genes.filter(g=>g.seq===gene.seq).sort((a,b)=>a.start-b.start);
-  return{idx:seqGenes.indexOf(gene),arr:seqGenes};
-}
-// Return coordinate window covering ±n genes around a given gene
+function ext(genes,seq){const gg=genes.filter(g=>g.seq===seq);if(!gg.length)return{s:0,e:1};return{s:Math.min(...gg.map(g=>g.start)),e:Math.max(...gg.map(g=>g.end))};}
+function blkColors(links){const blks=[...new Set(links.map(l=>l.blk))];const c={};blks.forEach((b,i)=>c[b]=BPAL[i%BPAL.length]);return{blks,c};}
+function geneRank(gene,genes){const seqGenes=genes.filter(g=>g.seq===gene.seq).sort((a,b)=>a.start-b.start);return{idx:seqGenes.indexOf(gene),arr:seqGenes};}
 function geneCountWindow(gene,genes,n){
-  const{idx,arr}=geneRank(gene,genes);
-  if(idx<0)return{s:gene.start-1,e:gene.end+1};
-  const lo=arr[Math.max(0,idx-n)];
-  const hi=arr[Math.min(arr.length-1,idx+n)];
-  const pad=Math.max(500,(hi.end-lo.start)*0.05);
-  return{s:Math.max(0,lo.start-pad),e:hi.end+pad};
+  const{idx,arr}=geneRank(gene,genes);if(idx<0)return{s:gene.start-1,e:gene.end+1};
+  const lo=arr[Math.max(0,idx-n)],hi=arr[Math.min(arr.length-1,idx+n)];
+  const pad=Math.max(500,(hi.end-lo.start)*0.05);return{s:Math.max(0,lo.start-pad),e:hi.end+pad};
 }
 
-// ─── File loading ─────────────────────────────────────────────────────────────
+// ── File loading ──────────────────────────────────────────────────────────────
 async function loadFiles(){
-  const f=S._files;
-  if(!f.gff1||!f.gff2||!f.syn){alert('Load GFF1, GFF2, and synteny file at minimum.');return;}
+  const f=S._files;if(!f.gff1||!f.gff2||!f.syn){alert('Load GFF1, GFF2, and synteny file at minimum.');return;}
   S.log=[];
   try{
     S.g1.genes=parseGff(await rf(f.gff1));S.g2.genes=parseGff(await rf(f.gff2));
     S.log.push(`GFF1 features: <b>${S.g1.genes.length}</b>  GFF2 features: <b>${S.g2.genes.length}</b>`);
-    const tp1={};S.g1.genes.forEach(g=>{tp1[g.tp]=(tp1[g.tp]||0)+1;});
-    const tp2={};S.g2.genes.forEach(g=>{tp2[g.tp]=(tp2[g.tp]||0)+1;});
+    const tp1={},tp2={};S.g1.genes.forEach(g=>{tp1[g.tp]=(tp1[g.tp]||0)+1;});S.g2.genes.forEach(g=>{tp2[g.tp]=(tp2[g.tp]||0)+1;});
     S.log.push('GFF1 types: <b>'+Object.entries(tp1).map(([k,v])=>k+':'+v).join(', ')+'</b>');
     S.log.push('GFF2 types: <b>'+Object.entries(tp2).map(([k,v])=>k+':'+v).join(', ')+'</b>');
     const synTxt=await rf(f.syn);const isMc=synTxt.includes('## Alignment');
     S.mode=isMc?'mcscan':'blast';S.log.push(`Synteny format: <b>${S.mode.toUpperCase()}</b>`);
     S.rawLinks=isMc?parseMcscan(synTxt):parseBlast(synTxt);
     if(S.mode==='blast')blastBlocks(S.rawLinks);
+    // ── Parse optional FASTA files ────────────────────────────────
+    if(f.fa1){const fa1Txt=await rf(f.fa1);S.fastaStats.g1=parseFasta(fa1Txt);S.log.push('FASTA G1: <b>'+S.fastaStats.g1.length+'</b> sequences');}
+    if(f.fa2){const fa2Txt=await rf(f.fa2);S.fastaStats.g2=parseFasta(fa2Txt);S.log.push('FASTA G2: <b>'+S.fastaStats.g2.length+'</b> sequences');}
+    // ── Compute assembly stats ──────────────────────────────────
+    if(S.fastaStats.g1)S.assemblyStats.g1=computeAssemblyStats(S.fastaStats.g1);
+    if(S.fastaStats.g2)S.assemblyStats.g2=computeAssemblyStats(S.fastaStats.g2);
     finishInit();
   }catch(e){alert('Error: '+e.message);console.error(e);}
 }
@@ -1013,8 +817,7 @@ function finishInit(){
   S.g1m=gmap(S.g1.genes);S.g2m=gmap(S.g2.genes);
   S.g1idx=buildIdx(S.g1.genes);S.g2idx=buildIdx(S.g2.genes);
   S.links=resolveLinks(S.rawLinks,S.g1m,S.g2m,S.g1idx,S.g2idx,S.mode,S.log);
-  const{blks,c}=blkColors(S.links);
-  S.blocks=blks;S.bColors=c;S.bActive={};blks.forEach(b=>S.bActive[b]=true);
+  const{blks,c}=blkColors(S.links);S.blocks=blks;S.bColors=c;S.bActive={};blks.forEach(b=>S.bActive[b]=true);
   S.g1.seqs=seqsFrom(S.g1.genes);S.g2.seqs=seqsFrom(S.g2.genes);
   const s1=document.getElementById('sel1'),s2=document.getElementById('sel2');
   s1.innerHTML=S.g1.seqs.map(n=>`<option>${n}</option>`).join('');
@@ -1023,10 +826,8 @@ function finishInit(){
   let best=null,bn=0;Object.entries(pairN).forEach(([k,n])=>{if(n>bn){bn=n;best=k;}});
   if(best){const[s1v,s2v]=best.split('|||');s1.value=s1v;s2.value=s2v;setS1(s1v);setS2(s2v);}
   else{setS1(S.g1.seqs[0]);setS2(S.g2.seqs[0]);}
-  renderBlist();
-  document.getElementById('upanel').style.display='none';document.getElementById('vpanel').style.display='block';
-  updateDiag();updateLegend();
-  if(S.links.length===0)document.getElementById('diag').style.display='block';
+  renderBlist();document.getElementById('upanel').style.display='none';document.getElementById('vpanel').style.display='block';
+  updateDiag();updateLegend();if(S.links.length===0)document.getElementById('diag').style.display='block';
   initCv();rsz();
 }
 function updateDiag(){document.getElementById('diag').innerHTML=S.log.map(l=>'<div>'+l+'</div>').join('');}
@@ -1038,14 +839,14 @@ function renderBlist(){
   const bl=document.getElementById('blist');bl.innerHTML='';
   S.blocks.forEach(b=>{
     const colors=S.bColors[b]||BPAL[0];const[fill,stroke]=colors;
-    const d=document.createElement('div');
-    d.className='bp'+(S.bActive[b]?' on':'');d.style.cssText=`background:${fill};color:${stroke}`;d.textContent=b;
+    const d=document.createElement('div');d.className='bp'+(S.bActive[b]?' on':'');
+    d.style.cssText=`background:${fill};color:${stroke}`;d.textContent=b;
     d.onclick=()=>{S.bActive[b]=!S.bActive[b];renderBlist();render();};bl.appendChild(d);
   });
 }
 function allBlk(v){S.blocks.forEach(b=>S.bActive[b]=v);renderBlist();render();}
 
-// ─── Demo ─────────────────────────────────────────────────────────────────────
+// ── Demo data ─────────────────────────────────────────────────────────────────
 function loadDemo(){
   S.log=[];const rng=(a,b)=>a+Math.floor(Math.random()*(b-a));const dg1=[],dg2=[];
   for(let i=0;i<100;i++){const s=i*1950+rng(0,200),e=s+rng(400,900);dg1.push({seq:'Chr1A',start:s,end:e,strand:Math.random()>.4?'+':'-',id:`Glyma.01G${String(i+1).padStart(5,'0')}`,idv:`Glyma.01G${String(i+1).padStart(5,'0')}`,name:`Glyma.01G${String(i+1).padStart(5,'0')}`,tp:'gene',parent:''});}
@@ -1062,35 +863,27 @@ function loadDemo(){
   S.g1.genes=dg1;S.g2.genes=dg2;S.links=lks;S.rawLinks=[];
   S.log.push(`Demo: <b>${dg1.length}</b> G1 genes, <b>${dg2.length}</b> G2 genes, <b>${lks.length}</b> links`);
   const{blks,c}=blkColors(lks);S.blocks=blks;S.bColors=c;S.bActive={};blks.forEach(b=>S.bActive[b]=true);
-  S.g1.seqs=seqsFrom(dg1);S.g2.seqs=seqsFrom(dg2);
-  S.g1m=gmap(dg1);S.g2m=gmap(dg2);S.g1idx=buildIdx(dg1);S.g2idx=buildIdx(dg2);
+  S.g1.seqs=seqsFrom(dg1);S.g2.seqs=seqsFrom(dg2);S.g1m=gmap(dg1);S.g2m=gmap(dg2);S.g1idx=buildIdx(dg1);S.g2idx=buildIdx(dg2);
   const s1=document.getElementById('sel1'),s2=document.getElementById('sel2');
   s1.innerHTML=S.g1.seqs.map(n=>`<option>${n}</option>`).join('');
   s2.innerHTML=S.g2.seqs.map(n=>`<option>${n}</option>`).join('');
   s1.value='Chr1A';s2.value='Chr1B';setS1('Chr1A');setS2('Chr1B');
-  renderBlist();
-  document.getElementById('upanel').style.display='none';document.getElementById('vpanel').style.display='block';
+  renderBlist();document.getElementById('upanel').style.display='none';document.getElementById('vpanel').style.display='block';
   updateDiag();updateLegend();initCv();rsz();
 }
 
-// ─── Canvas ───────────────────────────────────────────────────────────────────
+// ── Canvas ────────────────────────────────────────────────────────────────────
 let cv,cx,DPR=1;
-function getCanvasH(){
-  // Base size — render() will grow the canvas further if rotated labels need more room
-  return Math.max(500, CALLOUT_TOP_PAD + 300 + S.opts.trackGap);
-}
+function getCanvasH(){return Math.max(500,CALLOUT_TOP_PAD+300+S.opts.trackGap);}
 function initCv(){
   cv=document.getElementById('svc');DPR=window.devicePixelRatio||1;rsz();
   cv.addEventListener('mousedown',md);cv.addEventListener('mousemove',mm);
   cv.addEventListener('mouseup',mu);cv.addEventListener('mouseleave',mu);
-  cv.addEventListener('wheel',mw,{passive:false});
-  window.addEventListener('resize',rsz);
+  cv.addEventListener('wheel',mw,{passive:false});window.addEventListener('resize',rsz);
 }
 function rsz(){
-  if(!cv)return;
-  const W=cv.parentElement.clientWidth,H=getCanvasH();
-  cv.style.width=W+'px';cv.style.height=H+'px';
-  cv.width=W*DPR;cv.height=H*DPR;
+  if(!cv)return;const W=cv.parentElement.clientWidth,H=getCanvasH();
+  cv.style.width=W+'px';cv.style.height=H+'px';cv.width=W*DPR;cv.height=H*DPR;
   cx=cv.getContext('2d');cx.scale(DPR,DPR);render();
 }
 function cW(){return cv.width/DPR;}
@@ -1098,246 +891,83 @@ function fbp(v){if(v>=1e6)return(v/1e6).toFixed(2)+'M';if(v>=1e3)return(v/1e3).t
 function lkFill(pct,blk){
   if(S.opts.colorByBlock&&S.bActive[blk]){const[f]=S.bColors[blk]||BPAL[0];return{f,str:f.replace(/[\d.]+\)$/,'0.78)')};}
   if(pct>=80)return{f:hexToRgba(S.opts.colHigh,0.48),str:hexToRgba(S.opts.colHigh,0.70)};
-  if(pct>=60)return{f:hexToRgba(S.opts.colMid, 0.44),str:hexToRgba(S.opts.colMid, 0.65)};
-  return        {f:hexToRgba(S.opts.colLow, 0.38),str:hexToRgba(S.opts.colLow, 0.60)};
+  if(pct>=60)return{f:hexToRgba(S.opts.colMid,0.44),str:hexToRgba(S.opts.colMid,0.65)};
+  return{f:hexToRgba(S.opts.colLow,0.38),str:hexToRgba(S.opts.colLow,0.60)};
 }
 function arw(x1,x2,y,h,strand,col,isHov,isCustomHl){
   cx.globalAlpha=1;cx.setLineDash([]);
   if(x2-x1<1.2){cx.fillStyle=col;cx.fillRect((x1+x2)/2-0.8,y,1.6,h);return;}
   const aw=Math.min(10,(x2-x1)*0.28),bdy=Math.max(0,x2-x1-aw);
   cx.beginPath();
-  if(strand==='+'){
-    cx.moveTo(x1,y+h/2);cx.lineTo(x1,y);cx.lineTo(x1+bdy,y);
-    cx.lineTo(x1+bdy,y-3.5);cx.lineTo(x2,y+h/2);
-    cx.lineTo(x1+bdy,y+h+3.5);cx.lineTo(x1+bdy,y+h);cx.lineTo(x1,y+h);
-  }else{
-    cx.moveTo(x2,y+h/2);cx.lineTo(x2,y);cx.lineTo(x2-bdy,y);
-    cx.lineTo(x2-bdy,y-3.5);cx.lineTo(x1,y+h/2);
-    cx.lineTo(x2-bdy,y+h+3.5);cx.lineTo(x2-bdy,y+h);cx.lineTo(x2,y+h);
-  }
-  cx.closePath();
-  cx.fillStyle=col;cx.fill();
+  if(strand==='+'){cx.moveTo(x1,y+h/2);cx.lineTo(x1,y);cx.lineTo(x1+bdy,y);cx.lineTo(x1+bdy,y-3.5);cx.lineTo(x2,y+h/2);cx.lineTo(x1+bdy,y+h+3.5);cx.lineTo(x1+bdy,y+h);cx.lineTo(x1,y+h);}
+  else{cx.moveTo(x2,y+h/2);cx.lineTo(x2,y);cx.lineTo(x2-bdy,y);cx.lineTo(x2-bdy,y-3.5);cx.lineTo(x1,y+h/2);cx.lineTo(x2-bdy,y+h+3.5);cx.lineTo(x2-bdy,y+h);cx.lineTo(x2,y+h);}
+  cx.closePath();cx.fillStyle=col;cx.fill();
   cx.strokeStyle=isHov?'#085041':(isCustomHl?'rgba(0,0,0,0.38)':'rgba(0,0,0,0.14)');
   cx.lineWidth=isHov?1.3:(isCustomHl?1.3:0.5);cx.stroke();
 }
-// drawCallouts: rotation-aware staggered callout system.
-//
-// Key geometry: when text is rotated by θ degrees, a label of pixel-width W
-// occupies a *horizontal footprint* of W·cos(θ) and a *vertical rise* of W·sin(θ).
-// We use this to:
-//   1. Assign each label to a row such that its horizontal footprint does not
-//      overlap any previously placed label at that row.
-//   2. Size the row spacing to the actual vertical rise so labels never clip.
-//
-function drawCallouts(callouts, ty, isTop, canvasW){
+
+// ── Callout annotation system ─────────────────────────────────────────────────
+// Rotation-aware greedy row assignment. Each label's horizontal footprint
+// is W·cos(θ) and vertical rise is W·sin(θ). Labels are assigned to rows
+// so rotated footprints do not overlap. Canvas is dynamically resized to fit.
+function drawCallouts(callouts,ty,isTop,canvasW){
   if(!callouts.length)return;
   cx.save();
-
-  const FONT = 'bold 9px -apple-system,sans-serif';
-  const TEXT_H = 10;   // approximate text height in px
-  const LINE_GAP = 4;  // px gap between rows
-
-  cx.font = FONT;
-
-  // ── Pre-compute geometry for every callout ──────────────────────────────
-  const items = callouts.map(c => {
-    const lbl     = resolveHlLabel(c.hl, c.gene, c.geneId);
-    const angleDeg= c.hl.labelAngle || 0;
-    const rad     = angleDeg * Math.PI / 180;  // positive = we rotate CCW
-    const tw      = cx.measureText(lbl).width;
-    // Horizontal footprint of the rotated text
-    const hFoot   = tw * Math.cos(rad) + TEXT_H * Math.sin(rad);
-    // Vertical rise of the rotated text (how many px taller it gets)
-    const vRise   = tw * Math.sin(rad) + TEXT_H * Math.cos(rad);
-    return { c, lbl, rad, tw, hFoot, vRise,
-             col:    c.hl.color,
-             ptrCol: c.hl.pointerColor || c.hl.color,
-             lblCol: c.hl.labelColor   || c.hl.color };
+  const FONT='bold 9px -apple-system,sans-serif';
+  const TEXT_H=10,LINE_GAP=4;
+  cx.font=FONT;
+  const items=callouts.map(c=>{
+    const lbl=resolveHlLabel(c.hl,c.gene,c.geneId);
+    const angleDeg=c.hl.labelAngle||0,rad=angleDeg*Math.PI/180;
+    const tw=cx.measureText(lbl).width;
+    const hFoot=tw*Math.cos(rad)+TEXT_H*Math.sin(rad);
+    const vRise=tw*Math.sin(rad)+TEXT_H*Math.cos(rad);
+    return{c,lbl,rad,tw,hFoot,vRise,col:c.hl.color,ptrCol:c.hl.pointerColor||c.hl.color,lblCol:c.hl.labelColor||c.hl.color};
   });
-
-  // ── Greedy row assignment ────────────────────────────────────────────────
-  // Each row tracks its rightmost occupied x so far.
-  // Row height = max vRise across all items on that row + LINE_GAP.
-  // We allow up to MAX_ROWS; beyond that labels pile onto the last row.
-  const MAX_ROWS = 12;
-  const rowRE    = new Array(MAX_ROWS).fill(-Infinity); // right edge per row
-  const rowH     = new Array(MAX_ROWS).fill(TEXT_H);    // height per row
-  const assigned = [];   // {item, row, tx, ly}
-
-  items.forEach(it => {
-    const tx = it.c.xc + 5;
-    const PAD = 4;
-    const need_w = it.hFoot + PAD;
-
-    // Find lowest row where label fits without overlapping
-    let row = MAX_ROWS - 1;
-    for(let r = 0; r < MAX_ROWS; r++){
-      if(rowRE[r] <= tx){
-        row = r; break;
-      }
-    }
-    rowRE[row] = tx + need_w;
-    rowH[row]  = Math.max(rowH[row], it.vRise);
-    assigned.push({ it, row, tx });
-  });
-
-  // ── Compute cumulative row Y offsets from track ─────────────────────────
-  const nRows = assigned.reduce((m,a) => Math.max(m, a.row), 0) + 1;
-  // rowBaseY[r] = Y of the *bottom* of row r (closest to track = row 0)
-  // For isTop: rows stack upward, so row 0 is closest to track (largest Y).
-  const rowBaseY = new Array(nRows).fill(0);
-  if(isTop){
-    rowBaseY[0] = ty - 22;
-    for(let r = 1; r < nRows; r++)
-      rowBaseY[r] = rowBaseY[r-1] - rowH[r-1] - LINE_GAP;
-  } else {
-    rowBaseY[0] = ty + TH + 22;
-    for(let r = 1; r < nRows; r++)
-      rowBaseY[r] = rowBaseY[r-1] + rowH[r-1] + LINE_GAP;
-  }
-
-  // ── Compute actual topmost pixel used by labels ─────────────────────────
-  // For isTop: the topmost label is on the highest-numbered row (farthest from track).
-  // Its top edge = rowBaseY[that row] - vRise of the label on it.
-  if(isTop){
-    let topmost = T1; // safe default
-    assigned.forEach(({it, row}) => {
-      const ly = rowBaseY[Math.min(row, nRows-1)];
-      const labelTop = ly - it.vRise; // text rises upward from ly
-      topmost = Math.min(topmost, labelTop);
-    });
-    // headroom = distance from canvas top (y=0) to where labels start
-    // We need at least (T1 - topmost + 20) px above track
-    const needed = T1 - topmost + 20;
-    neededHeadroom = Math.max(neededHeadroom, needed);
-  }
-
-  // ── Draw ────────────────────────────────────────────────────────────────
-  assigned.forEach(({ it, row, tx }) => {
-    const ly  = rowBaseY[Math.min(row, nRows-1)];
-    const xGene = it.c.xc;
-
-    // Small fixed arrowhead pointing down at the gene
-    const tipY  = isTop ? ty - 4  : ty + TH + 4;   // tip of arrow touches track
-    const arrBase = isTop ? ty - 12 : ty + TH + 12; // base of arrowhead (8px tall)
-    cx.setLineDash([]); cx.lineWidth = 0.5; cx.globalAlpha = 1; cx.fillStyle = it.ptrCol;
-    cx.beginPath();
-    // Downward-pointing triangle (toward gene)
-    if(isTop){
-      cx.moveTo(xGene, tipY);           // tip at gene
-      cx.lineTo(xGene - 3, arrBase);
-      cx.lineTo(xGene + 3, arrBase);
-    } else {
-      cx.moveTo(xGene, tipY);           // tip at gene (pointing down-away)
-      cx.lineTo(xGene - 3, arrBase);
-      cx.lineTo(xGene + 3, arrBase);
-    }
-    cx.closePath(); cx.fill();
-
-    // Dashed vertical line from arrowhead base to label row
-    const lineStartY = arrBase;
-    const lineEndY   = isTop ? ly + 2 : ly - 2;
-    cx.strokeStyle = it.ptrCol; cx.lineWidth = 0.85;
-    cx.setLineDash([2, 3]); cx.globalAlpha = 0.65;
-    cx.beginPath();
-    cx.moveTo(xGene, lineStartY);
-    cx.lineTo(xGene, lineEndY);
-    cx.stroke();
-    cx.setLineDash([]); cx.globalAlpha = 1; cx.lineWidth = 0.5;
-
-    // Rotated label text
-    cx.save();
-    cx.translate(tx, ly);
-    cx.rotate(-it.rad);   // negative = CCW = text rises to upper-right
-    cx.textAlign = 'left'; cx.textBaseline = 'middle';
-    cx.font = FONT;
-    cx.strokeStyle = 'rgba(255,255,255,0.95)'; cx.lineWidth = 3.5; cx.lineJoin = 'round';
-    cx.strokeText(it.lbl, 0, 0);
-    cx.fillStyle = it.lblCol;
-    cx.fillText(it.lbl, 0, 0);
-    cx.restore();
-
-    // Hit box for click-to-edit (in unrotated space, anchored at tx,ly)
-    const PAD = 3;
-    lastCalloutHits.push({
-      geneId:     it.c.gene ? it.c.gene.id : it.c.geneId,
-      gene:       it.c.gene,
-      hl:         it.c.hl,
-      defaultLbl: it.lbl,
-      ox: tx, oy: ly,
-      angleRad: -it.rad,
-      tw: it.tw, th: TEXT_H,
-      x: tx - PAD,
-      y: ly - TEXT_H/2 - PAD,
-      w: it.tw + PAD * 2,
-      h: TEXT_H + PAD * 2
-    });
-  });
-
-  cx.restore();
-}
-
-// Return canvas headroom needed above G1 track for callout labels.
-// Measures actual label text for each highlighted gene, computes the real
-// vertical rise at the configured angle, and sizes accordingly.
-function calloutHeadroomNeeded(){
-  if(!S.hlEntries.some(e=>e.showCallout))return CALLOUT_TOP_PAD;
-  if(!cx)return CALLOUT_TOP_PAD;
-  const FONT = 'bold 9px -apple-system,sans-serif';
-  const TEXT_H = 10;
-  const LINE_GAP = 5;
-  const BASE_STUB = 28; // px from track to first label row (arrowhead + gap)
-  cx.save(); cx.font = FONT;
-
-  // Collect all (labelText, angleDeg) pairs for visible highlighted genes
-  const pairs = [];
-  S.hlEntries.forEach(e=>{
-    if(!e.showCallout||!e.query.trim())return;
-    const rad = (e.labelAngle||0)*Math.PI/180;
-    // Try to get real labels from the gene maps; fall back to the raw IDs
-    e.query.split(/[\s,;]+/).filter(Boolean).forEach(rawId=>{
-      const id=rawId.trim();
-      const g=S.g1m[id]||S.g2m[id]||S.g1m[id.replace(/\.\d+$/,'')]||S.g2m[id.replace(/\.\d+$/,'')];
-      const lbl=g?resolveHlLabel(e,g,id):id;
-      const tw=cx.measureText(lbl).width;
-      const vRise=tw*Math.sin(rad)+TEXT_H*Math.cos(rad);
-      pairs.push({rad,vRise,tw});
-    });
-  });
-  cx.restore();
-
-  if(!pairs.length)return CALLOUT_TOP_PAD;
-
-  // Simulate greedy row assignment to count actual rows needed
   const MAX_ROWS=12;
   const rowRE=new Array(MAX_ROWS).fill(-Infinity);
   const rowH=new Array(MAX_ROWS).fill(TEXT_H);
-  let maxRow=0;
-  pairs.forEach(p=>{
-    const need_w=p.tw*Math.cos(p.rad)+TEXT_H*Math.sin(p.rad)+8;
-    // Use a representative x spacing (assume labels spread across 800px canvas)
-    const tx=rowRE.reduce((mn,v,i)=>v<rowRE[mn]?i:mn,0); // just pick least-full row
-    let row=MAX_ROWS-1;
-    for(let r=0;r<MAX_ROWS;r++){if(rowRE[r]<=0){row=r;break;}}
-    rowRE[row]+=need_w;
-    rowH[row]=Math.max(rowH[row],p.vRise);
-    maxRow=Math.max(maxRow,row);
+  const assigned=[];
+  items.forEach(it=>{
+    const tx=it.c.xc+5,PAD=4,need_w=it.hFoot+PAD;
+    let row=MAX_ROWS-1;for(let r=0;r<MAX_ROWS;r++){if(rowRE[r]<=tx){row=r;break;}}
+    rowRE[row]=tx+need_w;rowH[row]=Math.max(rowH[row],it.vRise);assigned.push({it,row,tx});
   });
-
-  // Total height = base stub + sum of row heights up to maxRow
-  let total=BASE_STUB;
-  for(let r=0;r<=maxRow;r++) total+=rowH[r]+LINE_GAP;
-  return Math.max(CALLOUT_TOP_PAD, Math.ceil(total)+20);
+  const nRows=assigned.reduce((m,a)=>Math.max(m,a.row),0)+1;
+  const rowBaseY=new Array(nRows).fill(0);
+  if(isTop){rowBaseY[0]=ty-22;for(let r=1;r<nRows;r++)rowBaseY[r]=rowBaseY[r-1]-rowH[r-1]-LINE_GAP;}
+  else{rowBaseY[0]=ty+TH+22;for(let r=1;r<nRows;r++)rowBaseY[r]=rowBaseY[r-1]+rowH[r-1]+LINE_GAP;}
+  // Track topmost pixel for dynamic canvas sizing
+  if(isTop){
+    let topmost=T1;
+    assigned.forEach(({it,row})=>{const ly=rowBaseY[Math.min(row,nRows-1)];topmost=Math.min(topmost,ly-it.vRise);});
+    neededHeadroom=Math.max(neededHeadroom,T1-topmost+20);
+  }
+  assigned.forEach(({it,row,tx})=>{
+    const ly=rowBaseY[Math.min(row,nRows-1)],xGene=it.c.xc;
+    const tipY=isTop?ty-4:ty+TH+4,arrBase=isTop?ty-12:ty+TH+12;
+    cx.setLineDash([]);cx.lineWidth=0.5;cx.globalAlpha=1;cx.fillStyle=it.ptrCol;
+    cx.beginPath();cx.moveTo(xGene,tipY);cx.lineTo(xGene-3,arrBase);cx.lineTo(xGene+3,arrBase);cx.closePath();cx.fill();
+    const lineEndY=isTop?ly+2:ly-2;
+    cx.strokeStyle=it.ptrCol;cx.lineWidth=0.85;cx.setLineDash([2,3]);cx.globalAlpha=0.65;
+    cx.beginPath();cx.moveTo(xGene,arrBase);cx.lineTo(xGene,lineEndY);cx.stroke();
+    cx.setLineDash([]);cx.globalAlpha=1;cx.lineWidth=0.5;
+    cx.save();cx.translate(tx,ly);cx.rotate(-it.rad);cx.textAlign='left';cx.textBaseline='middle';cx.font=FONT;
+    cx.strokeStyle='rgba(255,255,255,0.95)';cx.lineWidth=3.5;cx.lineJoin='round';cx.strokeText(it.lbl,0,0);
+    cx.fillStyle=it.lblCol;cx.fillText(it.lbl,0,0);cx.restore();
+    const PAD=3;
+    lastCalloutHits.push({geneId:it.c.gene?it.c.gene.id:it.c.geneId,gene:it.c.gene,hl:it.c.hl,defaultLbl:it.lbl,
+      ox:tx,oy:ly,angleRad:-it.rad,tw:it.tw,th:TEXT_H,x:tx-PAD,y:ly-TEXT_H/2-PAD,w:it.tw+PAD*2,h:TEXT_H+PAD*2});
+  });
+  cx.restore();
 }
 
-// ─── Render ───────────────────────────────────────────────────────────────────
+// ── Main render ───────────────────────────────────────────────────────────────
 function render(){
   if(!cx)return;
-  lastCalloutHits=[];  // reset hit registry each frame
-  neededHeadroom=0;    // will be recomputed by drawCallouts
+  lastCalloutHits=[];neededHeadroom=0;
   const w=cW(),canH=cv.height/DPR;
-  dynMGL=computeMGL();
-  cx.clearRect(0,0,w,canH);
+  dynMGL=computeMGL();cx.clearRect(0,0,w,canH);
   const v1=S.g1.view,v2=S.g2.view,flip1=S.g1.flip,flip2=S.g2.flip;
   const dynT2=CT+S.opts.trackGap;
   cx.fillStyle=S.opts.trackBg1;cx.fillRect(0,T1-4,w,TH+8);
@@ -1348,22 +978,14 @@ function render(){
   cx.strokeStyle='rgba(0,0,0,0.08)';cx.lineWidth=1;
   cx.beginPath();cx.moveTo(dynMGL-3,T1-4);cx.lineTo(dynMGL-3,T1+TH+4);cx.moveTo(dynMGL-3,dynT2-4);cx.lineTo(dynMGL-3,dynT2+TH+4);cx.stroke();
   [[v1,T1,S.opts.scaleSide1,flip1],[v2,dynT2,S.opts.scaleSide2,flip2]].forEach(([v,ty,side,flip])=>{
-    const above=side==='above';
-    const lineY=above?ty-7:ty+TH+6,tickY2=above?ty-12:ty+TH+11,textY=above?ty-15:ty+TH+17;
-    cx.strokeStyle='rgba(0,0,0,0.09)';cx.lineWidth=0.5;
-    cx.beginPath();cx.moveTo(dynMGL,lineY);cx.lineTo(w-MGR,lineY);cx.stroke();
+    const above=side==='above';const lineY=above?ty-7:ty+TH+6,tickY2=above?ty-12:ty+TH+11,textY=above?ty-15:ty+TH+17;
+    cx.strokeStyle='rgba(0,0,0,0.09)';cx.lineWidth=0.5;cx.beginPath();cx.moveTo(dynMGL,lineY);cx.lineTo(w-MGR,lineY);cx.stroke();
     cx.fillStyle='#999';cx.font='10px -apple-system,sans-serif';cx.textAlign='center';
-    for(let j=0;j<=6;j++){
-      const bp=v.s+j/6*(v.e-v.s),x=gx(bp,v,w,flip);
-      cx.fillText(fbp(bp),x,textY);
-      cx.strokeStyle='rgba(0,0,0,0.07)';cx.beginPath();cx.moveTo(x,lineY);cx.lineTo(x,tickY2);cx.stroke();
-    }
+    for(let j=0;j<=6;j++){const bp=v.s+j/6*(v.e-v.s),x=gx(bp,v,w,flip);cx.fillText(fbp(bp),x,textY);cx.strokeStyle='rgba(0,0,0,0.07)';cx.beginPath();cx.moveTo(x,lineY);cx.lineTo(x,tickY2);cx.stroke();}
   });
   const vg1=S.g1.genes.filter(g=>g.seq===S.g1.name&&g.end>=v1.s&&g.start<=v1.e);
   const vg2=S.g2.genes.filter(g=>g.seq===S.g2.name&&g.end>=v2.s&&g.start<=v2.e);
-  const vl=S.links.filter(lk=>
-    lk.g1.seq===S.g1.name&&lk.g2.seq===S.g2.name&&
-    lk.g1.end>=v1.s&&lk.g1.start<=v1.e&&lk.g2.end>=v2.s&&lk.g2.start<=v2.e);
+  const vl=S.links.filter(lk=>lk.g1.seq===S.g1.name&&lk.g2.seq===S.g2.name&&lk.g1.end>=v1.s&&lk.g1.start<=v1.e&&lk.g2.end>=v2.s&&lk.g2.start<=v2.e);
   cx.save();cx.globalAlpha=S.opts.linkAlpha;
   vl.forEach(lk=>{
     const g1a=gx(lk.g1.start,v1,w,flip1),g1b=gx(lk.g1.end,v1,w,flip1);
@@ -1374,20 +996,16 @@ function render(){
     const{f,str}=lkFill(lk.pct,lk.blk);
     const isF=S.found&&(lk.g1.id===S.found.id||lk.g2.id===S.found.id);
     cx.beginPath();cx.moveTo(xa,CT+3);cx.lineTo(xb,CT+3);cx.lineTo(xd,dynT2-3);cx.lineTo(xc2,dynT2-3);cx.closePath();
-    cx.fillStyle=isF?'rgba(29,158,117,0.52)':f;cx.fill();
-    cx.strokeStyle=isF?'#1D9E75':str;cx.lineWidth=isF?1.5:0.8;cx.stroke();
+    cx.fillStyle=isF?'rgba(29,158,117,0.52)':f;cx.fill();cx.strokeStyle=isF?'#1D9E75':str;cx.lineWidth=isF?1.5:0.8;cx.stroke();
   });
   cx.restore();
   function drawGenes(genes,v,ty,isTop,flip){
     const callouts=[],placedLabels=[];
     const items=genes.map(g=>{
       const gxa=gx(g.start,v,w,flip),gxb=gx(g.end,v,w,flip);
-      const x1=Math.max(Math.min(gxa,gxb),dynMGL+1);
-      const x2=Math.min(Math.max(gxa,gxb),w-MGR-1);
-      const hl=getHl(g);
-      const effStrand=flip?(g.strand==='+'?'-':'+'):g.strand;
-      const isActualHov=S.hov&&S.hov.id===g.id;
-      const isFnd=S.found&&S.found.id===g.id;
+      const x1=Math.max(Math.min(gxa,gxb),dynMGL+1),x2=Math.min(Math.max(gxa,gxb),w-MGR-1);
+      const hl=getHl(g),effStrand=flip?(g.strand==='+'?'-':'+'):g.strand;
+      const isActualHov=S.hov&&S.hov.id===g.id,isFnd=S.found&&S.found.id===g.id;
       const baseCol=effStrand==='-'?S.opts.colNeg:S.opts.colPos;
       const col=isActualHov?'#1D9E75':hl?hl.color:isFnd?'#1D9E75':baseCol;
       const isHovEff=isActualHov||(isFnd&&!hl);
@@ -1396,98 +1014,68 @@ function render(){
     items.forEach(({hl,x1,x2})=>{
       if(!hl||!hl.showBodyFill)return;
       cx.save();cx.globalAlpha=0.28;cx.setLineDash([]);cx.fillStyle=hl.bodyColor;
-      const pad=4,bx=x1-pad,by=ty+(TH-GH)/2-pad,bw=(x2-x1)+pad*2,bh=GH+pad*2;
-      const r=Math.min(5,bw/2,bh/2);
+      const pad=4,bx=x1-pad,by=ty+(TH-GH)/2-pad,bw=(x2-x1)+pad*2,bh=GH+pad*2;const r=Math.min(5,bw/2,bh/2);
       cx.beginPath();cx.moveTo(bx+r,by);cx.lineTo(bx+bw-r,by);cx.arcTo(bx+bw,by,bx+bw,by+r,r);
       cx.lineTo(bx+bw,by+bh-r);cx.arcTo(bx+bw,by+bh,bx+bw-r,by+bh,r);
-      cx.lineTo(bx+r,by+bh);cx.arcTo(bx,by+bh,bx,by+bh-r,r);
-      cx.lineTo(bx,by+r);cx.arcTo(bx,by,bx+r,by,r);cx.closePath();cx.fill();cx.restore();
+      cx.lineTo(bx+r,by+bh);cx.arcTo(bx,by+bh,bx,by+bh-r,r);cx.lineTo(bx,by+r);cx.arcTo(bx,by,bx+r,by,r);
+      cx.closePath();cx.fill();cx.restore();
     });
     items.forEach(({x1,x2,hl,effStrand,col,isHovEff})=>{arw(x1,x2,ty+(TH-GH)/2,GH,effStrand,col,isHovEff,!!hl&&!isHovEff);});
     items.forEach(({g,x1,x2,hl})=>{
-      const xc=(x1+x2)/2,wide=x2-x1;
-      const displayLbl=geneLabel(g);
+      const xc=(x1+x2)/2,wide=x2-x1,displayLbl=geneLabel(g);
       if(hl){
         if(hl.showInsideLabel&&wide>24){
           cx.font='bold 8.5px -apple-system,sans-serif';cx.textAlign='center';
-          const inLbl=resolveHlLabel(hl,g,displayLbl);
-          // Truncate only for inside-arrow labels where space is physically limited
-          const short=inLbl.length>18?inLbl.slice(0,16)+'…':inLbl;
+          const inLbl=resolveHlLabel(hl,g,displayLbl),short=inLbl.length>18?inLbl.slice(0,16)+'…':inLbl;
           const lw=cx.measureText(short).width,ll=xc-lw/2-1,lr=xc+lw/2+1;
-          if(lr-ll<wide-4&&!placedLabels.some(p=>lr>p.l&&ll<p.r)){
-            cx.fillStyle='rgba(255,255,255,0.95)';cx.fillText(short,xc,ty+TH/2+3);placedLabels.push({l:ll,r:lr});
-          }
+          if(lr-ll<wide-4&&!placedLabels.some(p=>lr>p.l&&ll<p.r)){cx.fillStyle='rgba(255,255,255,0.95)';cx.fillText(short,xc,ty+TH/2+3);placedLabels.push({l:ll,r:lr});}
         }
         if(hl.showCallout)callouts.push({xc,hl,geneId:displayLbl,gene:g});
       }else if(S.opts.showNames&&wide>32){
         cx.font='8.5px -apple-system,sans-serif';cx.textAlign='center';
         const lbl=displayLbl.length>15?displayLbl.slice(0,13)+'…':displayLbl;
         const lw=cx.measureText(lbl).width,ll=xc-lw/2-1,lr=xc+lw/2+1;
-        if(!placedLabels.some(p=>lr>p.l&&ll<p.r)){
-          cx.fillStyle='rgba(255,255,255,0.92)';cx.fillText(lbl,xc,ty+TH/2+3);placedLabels.push({l:ll,r:lr});
-        }
+        if(!placedLabels.some(p=>lr>p.l&&ll<p.r)){cx.fillStyle='rgba(255,255,255,0.92)';cx.fillText(lbl,xc,ty+TH/2+3);placedLabels.push({l:ll,r:lr});}
       }
     });
-    // ── Pass D: draw all callouts for this track ──────────────────────────────
     callouts.sort((a,b)=>a.xc-b.xc);
-    if(callouts.length) drawCallouts(callouts, ty, isTop, w);
+    if(callouts.length)drawCallouts(callouts,ty,isTop,w);
   }
   drawGenes(vg1,v1,T1,true,flip1);drawGenes(vg2,v2,dynT2,false,flip2);
-
-  // ── Schedule canvas resize if labels need more headroom ─────────────────
-  // Do NOT resize inside render() — that causes infinite recursion.
-  // Instead, post a microtask: if the canvas is too short, resize then redraw.
-  if(neededHeadroom > 0){
-    const needed = Math.ceil(neededHeadroom + S.opts.trackGap + 300);
-    if(needed > cv.height/DPR + 4){  // +4 to avoid resize thrash on tiny differences
+  // Dynamic canvas resize — scheduled to avoid recursion
+  if(neededHeadroom>0){
+    const needed=Math.ceil(neededHeadroom+S.opts.trackGap+300);
+    if(needed>cv.height/DPR+4){
       clearTimeout(render._resizeTimer);
-      render._resizeTimer = setTimeout(()=>{
+      render._resizeTimer=setTimeout(()=>{
         if(!cv)return;
-        const W = cv.parentElement.clientWidth;
-        cv.style.width  = W+'px';
-        cv.style.height = needed+'px';
-        cv.width  = W*DPR;
-        cv.height = needed*DPR;
-        cx = cv.getContext('2d'); cx.scale(DPR,DPR);
-        render();
-      }, 0);
+        const W=cv.parentElement.clientWidth;
+        cv.style.width=W+'px';cv.style.height=needed+'px';
+        cv.width=W*DPR;cv.height=needed*DPR;
+        cx=cv.getContext('2d');cx.scale(DPR,DPR);render();
+      },0);
     }
   }
   const r1txt=flip1?`${fbp(v1.e)}⇄${fbp(v1.s)}`:`${fbp(v1.s)}–${fbp(v1.e)}`;
   const r2txt=flip2?`${fbp(v2.e)}⇄${fbp(v2.s)}`:`${fbp(v2.s)}–${fbp(v2.e)}`;
-  document.getElementById('sbar').textContent=
-    `G1: ${r1txt}  |  G2: ${r2txt}  |  genes: ${vg1.length} / ${vg2.length}  |  links: ${vl.length} visible / ${S.links.length} total`;
+  document.getElementById('sbar').textContent=`G1: ${r1txt}  |  G2: ${r2txt}  |  genes: ${vg1.length} / ${vg2.length}  |  links: ${vl.length} visible / ${S.links.length} total`;
   document.getElementById('r1').value=Math.round(v1.s)+'-'+Math.round(v1.e);
   document.getElementById('r2').value=Math.round(v2.s)+'-'+Math.round(v2.e);
 }
 
-// ─── Navigation ───────────────────────────────────────────────────────────────
+// ── Navigation ────────────────────────────────────────────────────────────────
 function zm(f){
   function zv(v){const c=(v.s+v.e)/2,h=(v.e-v.s)/2/f;v.s=Math.max(0,c-h);v.e=v.s+h*2;}
-  zv(S.g1.view);zv(S.g2.view);
-  if(S.opts.anchor==='g2tog1')followG2();else if(S.opts.anchor==='g1tog2')followG1();
-  render();
+  zv(S.g1.view);zv(S.g2.view);if(S.opts.anchor==='g2tog1')followG2();else if(S.opts.anchor==='g1tog2')followG1();render();
 }
 function resetV(){S.g1.view={s:S.g1.s,e:S.g1.e};S.g2.view={s:S.g2.s,e:S.g2.e};render();}
 function zoomToSize(){
   const val=Math.max(1,+(document.getElementById('zoomSizeVal').value)||20);
   const unit=document.getElementById('zoomSizeUnit').value;
-  let span;
-  if(unit==='kb')span=Math.round(val*1000);
-  else if(unit==='Mb')span=Math.round(val*1e6);
-  else span=Math.round(val);
-  // Centre both views on their current midpoints
-  function centreView(v){
-    const mid=(v.s+v.e)/2;
-    const half=span/2;
-    v.s=Math.max(0,mid-half);
-    v.e=v.s+span;
-  }
-  centreView(S.g1.view);
-  centreView(S.g2.view);
-  if(S.opts.anchor==='g2tog1')followG2();
-  else if(S.opts.anchor==='g1tog2')followG1();
-  render();
+  let span=unit==='kb'?Math.round(val*1000):unit==='Mb'?Math.round(val*1e6):Math.round(val);
+  function centreView(v){const mid=(v.s+v.e)/2,half=span/2;v.s=Math.max(0,mid-half);v.e=v.s+span;}
+  centreView(S.g1.view);centreView(S.g2.view);
+  if(S.opts.anchor==='g2tog1')followG2();else if(S.opts.anchor==='g1tog2')followG1();render();
 }
 function goRgn(){
   function pv(str,d){const m=str.match(/(\d+)[\s\-,]+(\d+)/);return m?{s:Math.min(+m[1],+m[2]),e:Math.max(+m[1],+m[2])}:d;}
@@ -1495,59 +1083,26 @@ function goRgn(){
   S.g2.view=pv(document.getElementById('r2').value,S.g2.view);render();
 }
 
-// ─── Find gene ────────────────────────────────────────────────────────────────
-function getFindFlankBp(gene,genes){
+// ── Find gene ─────────────────────────────────────────────────────────────────
+function getFindFlankBp(){
   const val=Math.max(1,+(document.getElementById('findFlankVal').value)||10);
   const unit=document.getElementById('findFlankUnit').value;
-  if(unit==='genes'){
-    // Return null — handled separately via geneCountWindow
-    return null;
-  }
-  if(unit==='kb')return Math.round(val*1000);
-  if(unit==='Mb')return Math.round(val*1e6);
-  return Math.round(val);
+  if(unit==='genes')return null;
+  if(unit==='kb')return Math.round(val*1000);if(unit==='Mb')return Math.round(val*1e6);return Math.round(val);
 }
 function focusTrackOnGene(trackNum,gene,flankBpOrNull,nGenesOrNull){
-  // Always re-resolve the gene object from the live gene map so we get
-  // fresh, correct coordinates — link objects can carry stale/zero coords
-  // when they were built from raw parsed rows rather than the GFF gene list.
-  const liveGene=(trackNum===1?(S.g1m[gene.id]||S.g1m[gene.idv||'']||gene)
-                               :(S.g2m[gene.id]||S.g2m[gene.idv||'']||gene));
-
-  // Sanity-check: if coordinates look bogus (start===end===0) try the other map
-  const g=(liveGene.start===0&&liveGene.end===0)
-    ?(trackNum===1?(S.g2m[gene.id]||gene):(S.g1m[gene.id]||gene))
-    :liveGene;
-
-  let vs,ve;
-  const allGenes=trackNum===1?S.g1.genes:S.g2.genes;
-  if(nGenesOrNull!=null){
-    const win=geneCountWindow(g,allGenes,nGenesOrNull);
-    vs=win.s;ve=win.e;
-  }else{
-    const flank=flankBpOrNull||10000;
-    const mid=(g.start+g.end)/2;
-    vs=mid-flank;ve=mid+flank;
-    if(vs<0){ve-=vs;vs=0;}
-  }
-
-  if(trackNum===1){
-    S.g1.name=g.seq;document.getElementById('sel1').value=g.seq;
-    const e=ext(S.g1.genes,g.seq);S.g1.s=e.s;S.g1.e=e.e;
-    S.g1.view={s:vs,e:ve};
-  }else{
-    S.g2.name=g.seq;document.getElementById('sel2').value=g.seq;
-    const e=ext(S.g2.genes,g.seq);S.g2.s=e.s;S.g2.e=e.e;
-    S.g2.view={s:vs,e:ve};
-  }
+  const liveGene=(trackNum===1?(S.g1m[gene.id]||S.g1m[gene.idv||'']||gene):(S.g2m[gene.id]||S.g2m[gene.idv||'']||gene));
+  const g=(liveGene.start===0&&liveGene.end===0)?(trackNum===1?(S.g2m[gene.id]||gene):(S.g1m[gene.id]||gene)):liveGene;
+  let vs,ve;const allGenes=trackNum===1?S.g1.genes:S.g2.genes;
+  if(nGenesOrNull!=null){const win=geneCountWindow(g,allGenes,nGenesOrNull);vs=win.s;ve=win.e;}
+  else{const flank=flankBpOrNull||10000;const mid=(g.start+g.end)/2;vs=mid-flank;ve=mid+flank;if(vs<0){ve-=vs;vs=0;}}
+  if(trackNum===1){S.g1.name=g.seq;document.getElementById('sel1').value=g.seq;const e=ext(S.g1.genes,g.seq);S.g1.s=e.s;S.g1.e=e.e;S.g1.view={s:vs,e:ve};}
+  else{S.g2.name=g.seq;document.getElementById('sel2').value=g.seq;const e=ext(S.g2.genes,g.seq);S.g2.s=e.s;S.g2.e=e.e;S.g2.view={s:vs,e:ve};}
 }
 function clearFound(){
-  S.found=null;
-  document.getElementById('gsearch').value='';
-  const btn=document.getElementById('btnClearFound');
-  if(btn)btn.style.display='none';
-  document.getElementById('sbar').textContent='';
-  render();
+  S.found=null;document.getElementById('gsearch').value='';
+  const btn=document.getElementById('btnClearFound');if(btn)btn.style.display='none';
+  document.getElementById('sbar').textContent='';render();
 }
 function findGene(){
   const q=document.getElementById('gsearch').value.trim().toLowerCase();if(!q)return;
@@ -1555,39 +1110,23 @@ function findGene(){
   for(const g of S.g1.genes){if(g.id.toLowerCase().includes(q)||(g.name&&g.name.toLowerCase().includes(q))){found=g;break;}}
   if(!found)for(const g of S.g2.genes){if(g.id.toLowerCase().includes(q)||(g.name&&g.name.toLowerCase().includes(q))){found=g;break;}}
   if(!found){document.getElementById('sbar').textContent='Not found: '+q;S.found=null;const _b=document.getElementById('btnClearFound');if(_b)_b.style.display='none';render();return;}
-  S.found=found;
-  const btn=document.getElementById('btnClearFound');
-  if(btn)btn.style.display='';
+  S.found=found;const btn=document.getElementById('btnClearFound');if(btn)btn.style.display='';
   const inG1=!!S.g1m[found.id];
-  const unit=document.getElementById('findFlankUnit').value;
-  const isGeneMode=unit==='genes';
+  const unit=document.getElementById('findFlankUnit').value,isGeneMode=unit==='genes';
   const nGenes=isGeneMode?Math.max(1,+(document.getElementById('findFlankVal').value)||10):null;
   const flankBp=isGeneMode?null:getFindFlankBp();
-
-  // Focus the found gene's track
   focusTrackOnGene(inG1?1:2,found,flankBp,nGenes);
-
-  // Find best syntenic partner
   const lks=S.links.filter(l=>l.g1.id===found.id||l.g2.id===found.id).sort((a,b)=>b.pct-a.pct);
   if(lks.length){
-    const best=lks[0];
-    const partnerRaw=best.g1.id===found.id?best.g2:best.g1;
-    // Always re-resolve partner from the live gene map — link objects can carry
-    // stale or zero coordinates (especially after session restore or coord-based
-    // BLAST resolution where the stored object may differ from the GFF record).
+    const best=lks[0],partnerRaw=best.g1.id===found.id?best.g2:best.g1;
     const partnerMap=inG1?S.g2m:S.g1m;
-    const partner=partnerMap[partnerRaw.id]||partnerMap[partnerRaw.idv||'']
-                  ||partnerMap[partnerRaw.name||'']||partnerRaw;
+    const partner=partnerMap[partnerRaw.id]||partnerMap[partnerRaw.idv||'']||partnerMap[partnerRaw.name||'']||partnerRaw;
     focusTrackOnGene(inG1?2:1,partner,flankBp,nGenes);
     const flStr=isGeneMode?`±${nGenes} genes`:(document.getElementById('findFlankVal').value+unit);
-    document.getElementById('sbar').textContent=
-      `Found: ${geneLabel(found)} (${found.seq})  →  partner: ${geneLabel(partner)} (${partner.seq})  |  flank: ${flStr}  |  identity: ${best.pct.toFixed(1)}%  |  block: ${best.blk}`;
-  }else{
-    document.getElementById('sbar').textContent=`Found: ${geneLabel(found)} — no syntenic partner in current link set`;
-  }
+    document.getElementById('sbar').textContent=`Found: ${geneLabel(found)} (${found.seq})  →  partner: ${geneLabel(partner)} (${partner.seq})  |  flank: ${flStr}  |  identity: ${best.pct.toFixed(1)}%  |  block: ${best.blk}`;
+  }else{document.getElementById('sbar').textContent=`Found: ${geneLabel(found)} — no syntenic partner in current link set`;}
   render();
 }
-
 function exportPNG(){
   const W2=cW()*2,H2=(cv.height/DPR)*2;
   const off=document.createElement('canvas');off.width=W2;off.height=H2;
@@ -1596,76 +1135,41 @@ function exportPNG(){
   const a=document.createElement('a');a.download='synteny_view.png';a.href=off.toDataURL('image/png');a.click();
 }
 
-// ─── Mouse ────────────────────────────────────────────────────────────────────
-// ─── Click-to-edit callout labels ────────────────────────────────────────────
-let _editGeneId=null, _editPrevVal=null;
-
-function openLabelEdit(hit, canvasX, canvasY){
-  _editGeneId=hit.geneId;
-  _editPrevVal=S.labelOverrides[hit.geneId]!==undefined
-    ? S.labelOverrides[hit.geneId] : hit.defaultLbl;
-  const wrap=document.getElementById('labelEditWrap');
-  const inp=document.getElementById('labelEditInput');
-  // Position over the label on the canvas
-  const rect=cv.getBoundingClientRect();
-  const scaleX=rect.width/cW();
-  wrap.style.left=(hit.x*scaleX)+'px';
-  wrap.style.top=((hit.y-2)*scaleX)+'px';
-  wrap.style.display='block';
-  inp.value=_editPrevVal;
-  inp.style.width=Math.max(140,hit.w*scaleX+40)+'px';
-  inp.style.borderColor=hit.hl?hit.hl.color:'#7F77DD';
+// ── Click-to-edit callout labels ──────────────────────────────────────────────
+let _editGeneId=null,_editPrevVal=null;
+function openLabelEdit(hit,canvasX,canvasY){
+  _editGeneId=hit.geneId;_editPrevVal=S.labelOverrides[hit.geneId]!==undefined?S.labelOverrides[hit.geneId]:hit.defaultLbl;
+  const wrap=document.getElementById('labelEditWrap'),inp=document.getElementById('labelEditInput');
+  const rect=cv.getBoundingClientRect(),scaleX=rect.width/cW();
+  wrap.style.left=(hit.x*scaleX)+'px';wrap.style.top=((hit.y-2)*scaleX)+'px';wrap.style.display='block';
+  inp.value=_editPrevVal;inp.style.width=Math.max(140,hit.w*scaleX+40)+'px';inp.style.borderColor=hit.hl?hit.hl.color:'#7F77DD';
   setTimeout(()=>{inp.focus();inp.select();},30);
 }
 function commitLabelEdit(){
-  const wrap=document.getElementById('labelEditWrap');
-  if(wrap.style.display==='none')return;
-  wrap.style.display='none';
-  if(_editGeneId===null)return;
+  const wrap=document.getElementById('labelEditWrap');if(wrap.style.display==='none')return;
+  wrap.style.display='none';if(_editGeneId===null)return;
   const val=document.getElementById('labelEditInput').value.trim();
-  if(val===''||val===null){
-    // Empty → remove override (revert to default)
-    delete S.labelOverrides[_editGeneId];
-  }else{
-    S.labelOverrides[_editGeneId]=val;
-  }
-  _editGeneId=null;
-  render();
+  if(val===''||val===null)delete S.labelOverrides[_editGeneId];else S.labelOverrides[_editGeneId]=val;
+  _editGeneId=null;render();
 }
-function cancelLabelEdit(){
-  document.getElementById('labelEditWrap').style.display='none';
-  _editGeneId=null;
-}
+function cancelLabelEdit(){document.getElementById('labelEditWrap').style.display='none';_editGeneId=null;}
 function onLabelEditKey(e){
   if(e.key==='Enter'){e.preventDefault();commitLabelEdit();}
   else if(e.key==='Escape'){e.preventDefault();cancelLabelEdit();}
-  else if(e.key==='Delete'&&document.getElementById('labelEditInput').value===''){
-    // Delete on empty = reset to default
-    if(_editGeneId)delete S.labelOverrides[_editGeneId];
-    cancelLabelEdit();render();
-  }
+  else if(e.key==='Delete'&&document.getElementById('labelEditInput').value===''){if(_editGeneId)delete S.labelOverrides[_editGeneId];cancelLabelEdit();render();}
 }
 
+// ── Mouse ─────────────────────────────────────────────────────────────────────
 function md(e){
-  // Check if click lands on a callout label first
   const rect=cv.getBoundingClientRect();
-  const mx=(e.clientX-rect.left)*(cW()/rect.width);
-  const my=(e.clientY-rect.top)*(cW()/rect.width);
+  const mx=(e.clientX-rect.left)*(cW()/rect.width),my=(e.clientY-rect.top)*(cW()/rect.width);
   for(const hit of lastCalloutHits){
-    // For rotated labels, inverse-rotate the mouse point around the text origin
-    let lx=mx, ly2=my;
-    if(hit.angleRad){
-      const cos=Math.cos(-hit.angleRad), sin=Math.sin(-hit.angleRad);
-      const dx=mx-hit.ox, dy=my-hit.oy;
-      lx = hit.ox + dx*cos - dy*sin;
-      ly2= hit.oy + dx*sin + dy*cos;
-    }
-    if(lx>=hit.x&&lx<=hit.x+hit.w&&ly2>=hit.y&&ly2<=hit.y+hit.h){
-      openLabelEdit(hit, mx, my);
-      return;
-    }
+    let lx=mx,ly2=my;
+    if(hit.angleRad){const cos=Math.cos(-hit.angleRad),sin=Math.sin(-hit.angleRad),dx=mx-hit.ox,dy=my-hit.oy;lx=hit.ox+dx*cos-dy*sin;ly2=hit.oy+dx*sin+dy*cos;}
+    if(lx>=hit.x&&lx<=hit.x+hit.w&&ly2>=hit.y&&ly2<=hit.y+hit.h){openLabelEdit(hit,mx,my);return;}
   }
-  S.drag.on=true;S.drag.x=e.clientX;S.drag.v1={...S.g1.view};S.drag.v2={...S.g2.view};cv.classList.add('pan');}
+  S.drag.on=true;S.drag.x=e.clientX;S.drag.v1={...S.g1.view};S.drag.v2={...S.g2.view};cv.classList.add('pan');
+}
 function mu(){S.drag.on=false;cv.classList.remove('pan');}
 function mw(e){e.preventDefault();zm(e.deltaY<0?1.38:0.73);}
 function mm(e){
@@ -1673,8 +1177,8 @@ function mm(e){
   const dynT2=CT+S.opts.trackGap;
   if(S.drag.on){
     const dx=e.clientX-S.drag.x;
-    const sh1=S.g1.flip? dx/w*(S.drag.v1.e-S.drag.v1.s):-dx/w*(S.drag.v1.e-S.drag.v1.s);
-    const sh2=S.g2.flip? dx/w*(S.drag.v2.e-S.drag.v2.s):-dx/w*(S.drag.v2.e-S.drag.v2.s);
+    const sh1=S.g1.flip?dx/w*(S.drag.v1.e-S.drag.v1.s):-dx/w*(S.drag.v1.e-S.drag.v1.s);
+    const sh2=S.g2.flip?dx/w*(S.drag.v2.e-S.drag.v2.s):-dx/w*(S.drag.v2.e-S.drag.v2.s);
     const anchor=S.opts.anchor;
     if(anchor==='g2tog1'){S.g1.view.s=S.drag.v1.s+sh1;S.g1.view.e=S.drag.v1.e+sh1;followG2();}
     else if(anchor==='g1tog2'){S.g2.view.s=S.drag.v2.s+sh2;S.g2.view.e=S.drag.v2.e+sh2;followG1();}
@@ -1683,11 +1187,7 @@ function mm(e){
   }
   let f=null;
   const chk=(genes,v,ty,flip)=>{
-    for(const g of genes){
-      const gxa=gx(g.start,v,w,flip),gxb=gx(g.end,v,w,flip);
-      const xa=Math.min(gxa,gxb),xb=Math.max(gxa,gxb);
-      if(mx>=xa&&mx<=xb&&my>=ty&&my<=ty+TH){f=g;return;}
-    }
+    for(const g of genes){const gxa=gx(g.start,v,w,flip),gxb=gx(g.end,v,w,flip);const xa=Math.min(gxa,gxb),xb=Math.max(gxa,gxb);if(mx>=xa&&mx<=xb&&my>=ty&&my<=ty+TH){f=g;return;}}
   };
   chk(S.g1.genes.filter(g=>g.seq===S.g1.name),S.g1.view,T1,S.g1.flip);
   if(!f)chk(S.g2.genes.filter(g=>g.seq===S.g2.name),S.g2.view,dynT2,S.g2.flip);
@@ -1696,8 +1196,7 @@ function mm(e){
   if(f){
     tip.style.display='block';tip.style.left=(e.clientX+15)+'px';tip.style.top=(e.clientY-10)+'px';
     const lks=S.links.filter(l=>l.g1.id===f.id||l.g2.id===f.id);
-    const top=lks.sort((a,b)=>b.pct-a.pct)[0];
-    const pt=top?(top.g1.id===f.id?top.g2:top.g1):null;
+    const top=lks.sort((a,b)=>b.pct-a.pct)[0];const pt=top?(top.g1.id===f.id?top.g2:top.g1):null;
     const blks=[...new Set(lks.map(l=>l.blk))].join(', ')||'—';
     const hlInfo=getHl(f);const inG1=!!S.g1m[f.id];
     const flipNote=(inG1&&S.g1.flip)||(!inG1&&S.g2.flip)?' (track flipped)':'';
@@ -1706,13 +1205,98 @@ function mm(e){
     tip.innerHTML=`<b>${dispId}</b>${idLine}<br>${f.seq}: ${f.start.toLocaleString()}–${f.end.toLocaleString()}<br>`+
       `Strand: ${f.strand}${flipNote} &nbsp; Length: ${(f.end-f.start).toLocaleString()} bp<br>`+
       `Syntenic links: ${lks.length} &nbsp; Blocks: ${blks}`+
-      (pt?`<br>Best partner: <b>${geneLabel(pt)}</b> (${top.pct.toFixed(1)}%)`:'') +
+      (pt?`<br>Best partner: <b>${geneLabel(pt)}</b> (${top.pct.toFixed(1)}%)`:'')+
       (hlInfo?`<br><span style="color:${hlInfo.color}">&#127919; Highlight${hlInfo.label?' — '+hlInfo.label:''}</span>`:'');
     if(prev?.id!==f.id)render();
   }else{tip.style.display='none';if(prev){S.hov=null;render();}}
 }
 
-// ─── Init ─────────────────────────────────────────────────────────────────────
+// ── Init ──────────────────────────────────────────────────────────────────────
+
+// ─── FASTA parser ─────────────────────────────────────────────────────────────
+function parseFasta(txt){
+  const seqs=[];let name='',bases='';
+  const flush=()=>{if(!name)return;const upper=bases.toUpperCase();const len=upper.length;let gc=0,n=0;
+    for(let i=0;i<len;i++){const c=upper[i];if(c==='G'||c==='C')gc++;else if(c==='N')n++;}
+    seqs.push({name,length:len,gc,gcPct:len?gc/len*100:0,nCount:n,nPct:len?n/len*100:0});};
+  txt.split('\n').forEach(line=>{line=line.trim();if(line[0]==='>'){flush();name=line.slice(1).split(/\s/)[0];bases='';}
+    else if(name)bases+=line.replace(/\s/g,'');});
+  flush();return seqs;
+}
+// ─── Assembly-level summary stats ─────────────────────────────────────────────
+function computeAssemblyStats(fastaSeqs){
+  if(!fastaSeqs||!fastaSeqs.length)return null;
+  const lengths=fastaSeqs.map(s=>s.length).sort((a,b)=>b-a);
+  const n=lengths.length,total=lengths.reduce((a,b)=>a+b,0),mean=total/n;
+  const sorted=[...lengths].sort((a,b)=>a-b);
+  const median=n%2===0?(sorted[n/2-1]+sorted[n/2])/2:sorted[Math.floor(n/2)];
+  const longest=lengths[0],shortest=lengths[n-1];
+  function nStat(frac){const target=total*frac;let cum=0;
+    for(let i=0;i<lengths.length;i++){cum+=lengths[i];if(cum>=target)return{nVal:lengths[i],lVal:i+1};}
+    return{nVal:lengths[n-1],lVal:n};}
+  const n50=nStat(0.5),n90=nStat(0.9);
+  const totalGC=fastaSeqs.reduce((s,sq)=>s+sq.gc,0);
+  const totalN=fastaSeqs.reduce((s,sq)=>s+sq.nCount,0);
+  return{nSeqs:n,totalLen:total,meanLen:mean,medianLen:median,longest,shortest,
+    n50:n50.nVal,l50:n50.lVal,n90:n90.nVal,l90:n90.lVal,
+    gcPct:total?totalGC/total*100:0,nPct:total?totalN/total*100:0};
+}
+// ─── Toggle stats panel ──────────────────────────────────────────────────────
+function toggleStats(){const d=document.getElementById('statsbox');if(d.style.display==='block'){d.style.display='none';return;}d.style.display='block';renderStatsPanel();}
+// ─── Render assembly stats panel (FASTA-only) ────────────────────────────────
+function renderStatsPanel(){
+  const el=document.getElementById('statsContent');
+  if(!S.fastaStats.g1&&!S.fastaStats.g2){el.innerHTML='<div style="font-size:11px;color:#aaa;padding:6px">No FASTA files loaded. Load optional genome FASTA files to see assembly statistics.</div>';return;}
+  let html='';
+  [{label:'Genome 1',asmStats:S.assemblyStats.g1,seqs:S.fastaStats.g1},
+   {label:'Genome 2',asmStats:S.assemblyStats.g2,seqs:S.fastaStats.g2}
+  ].forEach(({label,asmStats,seqs})=>{
+    if(!seqs||!seqs.length)return;
+    html+='<div class="stats-genome">';
+    html+='<h3>'+label+'</h3>';
+    if(asmStats){
+      html+='<div class="stats-summary">';
+      html+='Sequences: <b>'+asmStats.nSeqs.toLocaleString()+'</b> &nbsp;|&nbsp; ';
+      html+='Total length: <b>'+asmStats.totalLen.toLocaleString()+'</b> bp &nbsp;|&nbsp; ';
+      html+='GC: <b>'+asmStats.gcPct.toFixed(1)+'%</b> &nbsp;|&nbsp; ';
+      html+='N: <b>'+asmStats.nPct.toFixed(2)+'%</b><br>';
+      html+='N50: <b>'+asmStats.n50.toLocaleString()+'</b> bp (L50: '+asmStats.l50+') &nbsp;|&nbsp; ';
+      html+='N90: <b>'+asmStats.n90.toLocaleString()+'</b> bp (L90: '+asmStats.l90+') &nbsp;|&nbsp; ';
+      html+='Longest: <b>'+asmStats.longest.toLocaleString()+'</b> &nbsp;|&nbsp; ';
+      html+='Shortest: <b>'+asmStats.shortest.toLocaleString()+'</b> &nbsp;|&nbsp; ';
+      html+='Mean: <b>'+Math.round(asmStats.meanLen).toLocaleString()+'</b> &nbsp;|&nbsp; ';
+      html+='Median: <b>'+Math.round(asmStats.medianLen).toLocaleString()+'</b>';
+      html+='</div>';
+    }
+    html+='<div class="stats-scroll"><table class="stats-tbl"><thead><tr>';
+    html+='<th>Sequence</th><th>Length (bp)</th><th>GC%</th><th>N%</th>';
+    html+='</tr></thead><tbody>';
+    seqs.forEach(s=>{
+      html+='<tr>';
+      html+='<td>'+s.name+'</td>';
+      html+='<td class="num">'+s.length.toLocaleString()+'</td>';
+      html+='<td class="num">'+s.gcPct.toFixed(1)+'</td>';
+      html+='<td class="num">'+s.nPct.toFixed(2)+'</td>';
+      html+='</tr>';
+    });
+    html+='</tbody></table></div></div>';
+  });
+  el.innerHTML=html;
+}
+// ─── Export stats as TSV ──────────────────────────────────────────────────────
+function exportStatsTSV(){
+  const rows=[['Genome','Sequence','Length_bp','GC_pct','N_pct']];
+  [{label:'Genome1',seqs:S.fastaStats.g1},{label:'Genome2',seqs:S.fastaStats.g2}].forEach(({label,seqs})=>{
+    if(!seqs)return;
+    seqs.forEach(s=>{rows.push([label,s.name,s.length,s.gcPct.toFixed(2),s.nPct.toFixed(3)]);});
+  });
+  const tsv=rows.map(r=>r.join('\t')).join('\n');
+  const blob=new Blob([tsv],{type:'text/tab-separated-values'});
+  const url=URL.createObjectURL(blob);const a=document.createElement('a');
+  a.download='assembly_stats_'+new Date().toISOString().slice(0,10)+'.tsv';
+  a.href=url;a.click();URL.revokeObjectURL(url);
+  document.getElementById('sbar').textContent='Assembly stats exported as TSV.';
+}
 updatePresetList();
 </script>
 </body>
